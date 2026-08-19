@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/Backend/">
+    <Project Path="JobRecruitmentSystem.API/JobRecruitmentSystem.API.csproj" />
+    <Project Path="JobRecruitmentSystem.BLL/JobRecruitmentSystem.BLL.csproj" />
+    <Project Path="JobRecruitmentSystem.DAL/JobRecruitmentSystem.DAL.csproj" />
+  </Folder>
+  <Folder Name="/Frontend/" />
+</Solution>
