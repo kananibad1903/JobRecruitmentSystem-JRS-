@@ -1,9 +1,6 @@
-﻿using JobRecruitmentSystem.DAL.Entities;
+﻿
+using JobRecruitmentSystem.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Reflection.Emit;
-using System.Text;
 
 namespace JobRecruitmentSystem.DAL.Data
 {
@@ -44,22 +41,26 @@ namespace JobRecruitmentSystem.DAL.Data
             modelBuilder.Entity<JobApplication>()
                 .HasOne(a => a.JobSeeker)
                 .WithMany(js => js.Applications)
-                .HasForeignKey(a => a.JobSeekerId);
+                .HasForeignKey(a => a.JobSeekerId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<JobApplication>()
                 .HasOne(a => a.JobPost)
                 .WithMany(jp => jp.Applications)
-                .HasForeignKey(a => a.JobPostId);
+                .HasForeignKey(a => a.JobPostId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<SavedJob>()
                 .HasOne(sj => sj.JobSeeker)
                 .WithMany(js => js.SavedJobs)
-                .HasForeignKey(sj => sj.JobSeekerId);
+                .HasForeignKey(sj => sj.JobSeekerId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<SavedJob>()
                 .HasOne(sj => sj.JobPost)
                 .WithMany(jp => jp.SavedJobs)
-                .HasForeignKey(sj => sj.JobPostId);
+                .HasForeignKey(sj => sj.JobPostId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<SavedJob>()
                 .HasIndex(sj => new { sj.JobSeekerId, sj.JobPostId })
