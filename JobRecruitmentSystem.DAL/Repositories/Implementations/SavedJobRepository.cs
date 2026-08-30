@@ -2,9 +2,7 @@
 using JobRecruitmentSystem.DAL.Entities;
 using JobRecruitmentSystem.DAL.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
+
 
 namespace JobRecruitmentSystem.DAL.Repositories.Implementations
 {
