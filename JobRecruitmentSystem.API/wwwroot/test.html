@@ -1,0 +1,179 @@
+﻿<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Panel</title>
+    <style>
+        body {
+            font-family: Arial;
+            max-width: 700px;
+            margin: 30px auto;
+        }
+
+        input, select, textarea {
+            display: block;
+            width: 100%;
+            margin: 5px 0 10px;
+            padding: 6px;
+        }
+
+        button {
+            padding: 8px 16px;
+            margin: 5px 5px 5px 0;
+            cursor: pointer;
+        }
+
+        pre {
+            background: #eee;
+            padding: 10px;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        hr {
+            margin: 30px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>1. Register</h2>
+    <input id="regFullName" placeholder="Full Name">
+    <input id="regEmail" placeholder="Email">
+    <input id="regPassword" placeholder="Password" type="password">
+    <select id="regRole">
+        <option value="JobSeeker">JobSeeker</option>
+        <option value="Employer">Employer</option>
+    </select>
+    <button onclick="register()">Register</button>
+
+    <h2>2. Login</h2>
+    <input id="loginEmail" placeholder="Email">
+    <input id="loginPassword" placeholder="Password" type="password">
+    <button onclick="login()">Login</button>
+    <p>Token: <span id="tokenDisplay">yoxdur</span></p>
+
+    <hr>
+
+    <h2>3. Job Post yarat (Employer)</h2>
+    <input id="jpTitle" placeholder="Title">
+<textarea id="jpDescription" placeholder="Description"></textarea>
+    <input id="jpRequirements" placeholder="Requirements">
+    <input id="jpCategory" placeholder="Category">
+    <input id="jpLocation" placeholder="Location">
+    <input id="jpJobType" placeholder="JobType (Full-time/Part-time/Remote)">
+    <input id="jpSalaryMin" placeholder="SalaryMin" type="number">
+    <input id="jpSalaryMax" placeholder="SalaryMax" type="number">
+    <input id="jpDeadline" placeholder="Deadline" type="date">
+    <button onclick="createJobPost()">Job Post Yarat</button>
+
+    <h2>4. Bütün elanlar</h2>
+    <button onclick="getAllJobs()">Elanları Göstər</button>
+
+    <h2>5. Elana müraciət et (JobSeeker)</h2>
+    <input id="applyJobPostId" placeholder="JobPostId">
+    <button onclick="apply()">Müraciət Et</button>
+
+    <hr>
+    <h3>Nəticə:</h3>
+<pre id="output">-</pre>
+
+    <script>
+const BASE = window.location.origin + "/api";
+let token = "";
+
+function val(id) {
+  const el = document.getElementById(id);
+  return el ? el.value : "";
+}
+
+function show(data) {
+  document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+}
+
+async function register() {
+  const body = {
+    fullName: val("regFullName"),
+    email: val("regEmail"),
+    password: val("regPassword"),
+    role: val("regRole")
+  };
+  const res = await fetch(`${BASE}/Auth/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+  const data = await res.json();
+  show(data);
+  if (data.token) {
+    token = data.token;
+    document.getElementById("tokenDisplay").textContent = token.substring(0, 30) + "...";
+  }
+}
+
+async function login() {
+  const body = {
+    email: val("loginEmail"),
+    password: val("loginPassword")
+  };
+  const res = await fetch(`${BASE}/Auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+  const data = await res.json();
+  show(data);
+  if (data.token) {
+    token = data.token;
+    document.getElementById("tokenDisplay").textContent = token.substring(0, 30) + "...";
+  }
+}
+
+async function createJobPost() {
+  const body = {
+    title: val("jpTitle"),
+    description: val("jpDescription"),
+    requirements: val("jpRequirements"),
+    category: val("jpCategory"),
+    location: val("jpLocation"),
+    jobType: val("jpJobType"),
+    salaryMin: parseFloat(val("jpSalaryMin")),
+    salaryMax: parseFloat(val("jpSalaryMax")),
+    deadline: val("jpDeadline")
+  };
+  const res = await fetch(`${BASE}/JobPost`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + token
+    },
+    body: JSON.stringify(body)
+  });
+  const data = await res.json();
+  show(data);
+}
+
+async function getAllJobs() {
+  const res = await fetch(`${BASE}/JobPost`);
+  const data = await res.json();
+  show(data);
+}
+
+async function apply() {
+  const body = {
+    jobPostId: parseInt(val("applyJobPostId"))
+  };
+  const res = await fetch(`${BASE}/Application`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + token
+    },
+    body: JSON.stringify(body)
+  });
+  const data = await res.json();
+  show(data);
+}
+    </script>
+</body>
+</html>
