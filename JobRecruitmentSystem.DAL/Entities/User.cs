@@ -16,6 +16,7 @@ namespace JobRecruitmentSystem.DAL.Entities
         public Employer Employer { get; set; }
         
         public JobSeeker JobSeeker { get; set; }
+        public string PasswordResetCode { get; set; }
 
         public bool EmailConfirmed { get; set; } = false;
         public string EmailConfirmationToken { get; set; }

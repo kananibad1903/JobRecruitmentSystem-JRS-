@@ -10,5 +10,7 @@ namespace JobRecruitmentSystem.BLL.Services.Interfaces
         Task<AuthResponseDto> RegisterAsync(RegisterDto dto);
         Task ConfirmEmailAsync(ConfirmEmailDto dto);
         Task<AuthResponseDto> LoginAsync(LoginDto dto);
+        Task ForgotPasswordAsync(ForgotPasswordDto dto);
+        Task ResetPasswordAsync(ResetPasswordDto dto);
     }
 }

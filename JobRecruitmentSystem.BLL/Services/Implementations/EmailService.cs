@@ -46,5 +46,37 @@ namespace JobRecruitmentSystem.BLL.Services.Implementations
             await client.SendAsync(message);
             await client.DisconnectAsync(true);
         }
+        public async Task SendPasswordResetCodeAsync(string toEmail, string code)
+        {
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress(
+                _configuration["Email:SenderName"],
+                _configuration["Email:SenderEmail"]));
+            message.To.Add(new MailboxAddress("", toEmail));
+            message.Subject = "Şifrə Sıfırlama Kodu - Job Recruitment System";
+
+            message.Body = new TextPart("html")
+            {
+                Text = $@"
+            <h2>Şifrə Sıfırlama</h2>
+            <p>Şifrənizi sıfırlamaq üçün aşağıdakı kodu daxil edin:</p>
+            <h1 style='letter-spacing: 5px;'>{code}</h1>
+            <p>Bu kod 15 dəqiqə etibarlıdır. Əgər bu tələbi siz etməmisinizsə, bu email-i nəzərə almayın.</p>
+        "
+            };
+
+            using var client = new SmtpClient();
+            await client.ConnectAsync(
+                _configuration["Email:SmtpServer"],
+                int.Parse(_configuration["Email:SmtpPort"]),
+                MailKit.Security.SecureSocketOptions.StartTls);
+
+            await client.AuthenticateAsync(
+                _configuration["Email:SenderEmail"],
+                _configuration["Email:SenderPassword"]);
+
+            await client.SendAsync(message);
+            await client.DisconnectAsync(true);
+        }
     }
 }

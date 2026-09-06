@@ -56,5 +56,32 @@ namespace JobRecruitmentSystem.API.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto dto)
+        {
+            try
+            {
+                await _authService.ForgotPasswordAsync(dto);
+                return Ok(new { message = "Kod email-ə göndərildi." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dto)
+        {
+            try
+            {
+                await _authService.ResetPasswordAsync(dto);
+                return Ok(new { message = "Şifrə uğurla dəyişdirildi." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
     }
 }

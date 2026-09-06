@@ -161,5 +161,37 @@ namespace JobRecruitmentSystem.BLL.Services.Implementations
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+        public async Task ForgotPasswordAsync(ForgotPasswordDto dto)
+        {
+            var user = await _userRepository.GetByEmailAsync(dto.Email);
+            if (user == null)
+            {
+                throw new Exception("Bu email ilə istifadəçi tapılmadı.");
+            }
+
+            var code = new Random().Next(100000, 999999).ToString();
+            user.PasswordResetCode = code;
+            await _userRepository.UpdateAsync(user);
+
+            await _emailService.SendPasswordResetCodeAsync(user.Email, code);
+        }
+
+        public async Task ResetPasswordAsync(ResetPasswordDto dto)
+        {
+            var user = await _userRepository.GetByEmailAsync(dto.Email);
+            if (user == null)
+            {
+                throw new Exception("İstifadəçi tapılmadı.");
+            }
+
+            if (string.IsNullOrEmpty(user.PasswordResetCode) || user.PasswordResetCode != dto.Code)
+            {
+                throw new Exception("Kod yanlışdır.");
+            }
+
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
+            user.PasswordResetCode = string.Empty;
+            await _userRepository.UpdateAsync(user);
+        }
     }
 }
