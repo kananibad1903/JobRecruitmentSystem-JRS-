@@ -27,6 +27,12 @@ namespace JobRecruitmentSystem.DAL.Repositories.Implementations
                 .FirstOrDefaultAsync(_context.Users, u => u.Email == email);
         }
 
+        public async Task<User> GetByConfirmationTokenAsync(string token)
+        {
+            return await Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions
+                .FirstOrDefaultAsync(_context.Users, u => u.EmailConfirmationToken == token);
+        }
+
         public async Task<List<User>> GetAllAsync()
         {
             return await Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions
@@ -54,6 +60,6 @@ namespace JobRecruitmentSystem.DAL.Repositories.Implementations
                 await _context.SaveChangesAsync();
             }
         }
-    }
+    }   
 }
 

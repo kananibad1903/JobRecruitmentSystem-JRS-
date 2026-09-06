@@ -17,17 +17,20 @@ namespace JobRecruitmentSystem.BLL.Services.Implementations
         private readonly IEmployerRepository _employerRepository;
         private readonly IJobSeekerRepository _jobSeekerRepository;
         private readonly IConfiguration _configuration;
+        private readonly IEmailService _emailService;
 
         public AuthService(
             IUserRepository userRepository,
             IEmployerRepository employerRepository,
             IJobSeekerRepository jobSeekerRepository,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IEmailService emailService)
         {
             _userRepository = userRepository;
             _employerRepository = employerRepository;
             _jobSeekerRepository = jobSeekerRepository;
             _configuration = configuration;
+            _emailService = emailService;
         }
 
         public async Task<AuthResponseDto> RegisterAsync(RegisterDto dto)
@@ -38,12 +41,16 @@ namespace JobRecruitmentSystem.BLL.Services.Implementations
                 throw new Exception("Bu email artıq qeydiyyatdan keçib.");
             }
 
+            var code = new Random().Next(100000, 999999).ToString();
+
             var user = new User
             {
                 FullName = dto.FullName,
                 Email = dto.Email,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
-                Role = dto.Role
+                Role = dto.Role,
+                EmailConfirmed = false,
+                EmailConfirmationToken = code
             };
 
             await _userRepository.AddAsync(user);
@@ -72,7 +79,7 @@ namespace JobRecruitmentSystem.BLL.Services.Implementations
                 await _jobSeekerRepository.AddAsync(jobSeeker);
             }
 
-            var token = GenerateToken(user);
+            await _emailService.SendConfirmationCodeAsync(user.Email, code);
 
             return new AuthResponseDto
             {
@@ -80,8 +87,31 @@ namespace JobRecruitmentSystem.BLL.Services.Implementations
                 FullName = user.FullName,
                 Email = user.Email,
                 Role = user.Role,
-                Token = token
+                Token = null
             };
+        }
+
+        public async Task ConfirmEmailAsync(ConfirmEmailDto dto)
+        {
+            var user = await _userRepository.GetByEmailAsync(dto.Email);
+            if (user == null)
+            {
+                throw new Exception("İstifadəçi tapılmadı.");
+            }
+
+            if (user.EmailConfirmed)
+            {
+                throw new Exception("Email artıq təsdiqlənib.");
+            }
+
+            if (user.EmailConfirmationToken != dto.Code)
+            {
+                throw new Exception("Kod yanlışdır.");
+            }
+
+            user.EmailConfirmed = true;
+            user.EmailConfirmationToken = string.Empty;
+            await _userRepository.UpdateAsync(user);
         }
 
         public async Task<AuthResponseDto> LoginAsync(LoginDto dto)
@@ -90,6 +120,11 @@ namespace JobRecruitmentSystem.BLL.Services.Implementations
             if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
             {
                 throw new Exception("Email və ya şifrə yanlışdır.");
+            }
+
+            if (!user.EmailConfirmed)
+            {
+                throw new Exception("Zəhmət olmasa əvvəlcə email ünvanınızı təsdiqləyin.");
             }
 
             var token = GenerateToken(user);
@@ -107,11 +142,11 @@ namespace JobRecruitmentSystem.BLL.Services.Implementations
         private string GenerateToken(User user)
         {
             var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role)
-            };
+        {
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.Role, user.Role)
+        };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

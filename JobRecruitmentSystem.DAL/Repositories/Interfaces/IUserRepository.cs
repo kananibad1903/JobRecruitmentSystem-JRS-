@@ -11,6 +11,7 @@ namespace JobRecruitmentSystem.DAL.Repositories.Interfaces
         Task<User> GetByEmailAsync(string email);
         Task<List<User>> GetAllAsync();
         Task AddAsync(User user);
+        Task<User> GetByConfirmationTokenAsync(string token);
         Task UpdateAsync(User user);
         Task DeleteAsync(int id);
     }

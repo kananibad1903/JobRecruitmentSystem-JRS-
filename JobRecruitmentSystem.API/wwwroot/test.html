@@ -2,177 +2,525 @@
 <html lang="az">
 <head>
     <meta charset="UTF-8">
-    <title>Test Panel</title>
+    <title>JRS Test Panel</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial;
-            max-width: 700px;
-            margin: 30px auto;
+            font-family: Segoe UI, Arial, sans-serif;
+            background: #f4f5f7;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #222;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 10px 16px;
+            border: none;
+            background: #ddd;
+            cursor: pointer;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+            .tab-btn.active {
+                background: #2d6cdf;
+                color: white;
+            }
+
+        .panel {
+            display: none;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+            .panel.active {
+                display: block;
+            }
+
+            .panel h2 {
+                margin-top: 0;
+                font-size: 18px;
+                color: #333;
+                border-bottom: 2px solid #eee;
+                padding-bottom: 8px;
+            }
+
+        label {
+            display: block;
+            font-size: 13px;
+            color: #555;
+            margin: 10px 0 3px;
         }
 
         input, select, textarea {
-            display: block;
             width: 100%;
-            margin: 5px 0 10px;
-            padding: 6px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
         }
 
-        button {
-            padding: 8px 16px;
-            margin: 5px 5px 5px 0;
+        textarea {
+            min-height: 60px;
+        }
+
+        button.action {
+            margin-top: 14px;
+            padding: 10px 18px;
+            background: #2d6cdf;
+            color: white;
+            border: none;
+            border-radius: 5px;
             cursor: pointer;
+            font-weight: 600;
         }
 
-        pre {
-            background: #eee;
-            padding: 10px;
-            white-space: pre-wrap;
+            button.action:hover {
+                background: #1e56c0;
+            }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        #tokenBar {
+            background: #222;
+            color: #0f0;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            margin-bottom: 16px;
             word-break: break-all;
         }
 
-        hr {
-            margin: 30px 0;
+        #output {
+            background: #1e1e1e;
+            color: #dcdcdc;
+            padding: 14px;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 400px;
+            overflow-y: auto;
+            font-size: 13px;
         }
+
+        .status {
+            display: inline-block;
+            margin-left: 8px;
+            font-size: 12px;
+        }
+
+            .status.ok {
+                color: green;
+            }
+
+            .status.err {
+                color: red;
+            }
     </style>
 </head>
 <body>
+    <div class="container">
+        <h1>Job Recruitment System — Test Panel</h1>
+        <div id="tokenBar">Token: yoxdur</div>
 
-    <h2>1. Register</h2>
-    <input id="regFullName" placeholder="Full Name">
-    <input id="regEmail" placeholder="Email">
-    <input id="regPassword" placeholder="Password" type="password">
-    <select id="regRole">
-        <option value="JobSeeker">JobSeeker</option>
-        <option value="Employer">Employer</option>
-    </select>
-    <button onclick="register()">Register</button>
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('auth')">1. Auth</button>
+            <button class="tab-btn" onclick="showTab('employer')">2. Employer Profil</button>
+            <button class="tab-btn" onclick="showTab('jobseeker')">3. JobSeeker Profil</button>
+            <button class="tab-btn" onclick="showTab('jobpost')">4. Job Post</button>
+            <button class="tab-btn" onclick="showTab('application')">5. Application</button>
+            <button class="tab-btn" onclick="showTab('savedjob')">6. Saved Job</button>
+        </div>
 
-    <h2>2. Login</h2>
-    <input id="loginEmail" placeholder="Email">
-    <input id="loginPassword" placeholder="Password" type="password">
-    <button onclick="login()">Login</button>
-    <p>Token: <span id="tokenDisplay">yoxdur</span></p>
+        <!-- AUTH -->
+        <div class="panel active" id="tab-auth">
+            <h2>Register</h2>
+            <div class="row">
+                <div><label>Full Name</label><input id="regFullName"></div>
+                <div><label>Email</label><input id="regEmail"></div>
+                <div><label>Password</label><input id="regPassword" type="password"></div>
+                <div>
+                    <label>Role</label>
+                    <select id="regRole">
+                        <option value="JobSeeker">JobSeeker</option>
+                        <option value="Employer">Employer</option>
+                    </select>
+                </div>
+            </div>
+            <button class="action" onclick="register()">Register</button>
+            <span id="regStatus" class="status"></span>
 
-    <hr>
+            <h2 style="margin-top:24px;">Email Təsdiqi</h2>
+            <div class="row">
+                <div><label>Email</label><input id="confirmEmail"></div>
+                <div><label>Kod</label><input id="confirmCode"></div>
+            </div>
+            <button class="action" onclick="confirmEmail()">Təsdiqlə</button>
+            <span id="confirmStatus" class="status"></span>
 
-    <h2>3. Job Post yarat (Employer)</h2>
-    <input id="jpTitle" placeholder="Title">
-<textarea id="jpDescription" placeholder="Description"></textarea>
-    <input id="jpRequirements" placeholder="Requirements">
-    <input id="jpCategory" placeholder="Category">
-    <input id="jpLocation" placeholder="Location">
-    <input id="jpJobType" placeholder="JobType (Full-time/Part-time/Remote)">
-    <input id="jpSalaryMin" placeholder="SalaryMin" type="number">
-    <input id="jpSalaryMax" placeholder="SalaryMax" type="number">
-    <input id="jpDeadline" placeholder="Deadline" type="date">
-    <button onclick="createJobPost()">Job Post Yarat</button>
+            <h2 style="margin-top:24px;">Login</h2>
+            <div class="row">
+                <div><label>Email</label><input id="loginEmail"></div>
+                <div><label>Password</label><input id="loginPassword" type="password"></div>
+            </div>
+            <button class="action" onclick="login()">Login</button>
+            <span id="loginStatus" class="status"></span>
+        </div>
 
-    <h2>4. Bütün elanlar</h2>
-    <button onclick="getAllJobs()">Elanları Göstər</button>
+        <!-- EMPLOYER -->
+        <div class="panel" id="tab-employer">
+            <h2>Employer Profili</h2>
+            <button class="action" onclick="getEmployerProfile()">Profili Gətir</button>
+            <div class="row" style="margin-top:14px;">
+                <div><label>Company Name</label><input id="empCompanyName"></div>
+                <div><label>Website</label><input id="empWebsite"></div>
+                <div><label>Location</label><input id="empLocation"></div>
+                <div><label>Description</label><textarea id="empDescription"></textarea></div>
+            </div>
+            <button class="action" onclick="updateEmployerProfile()">Yenilə</button>
+        </div>
 
-    <h2>5. Elana müraciət et (JobSeeker)</h2>
-    <input id="applyJobPostId" placeholder="JobPostId">
-    <button onclick="apply()">Müraciət Et</button>
+        <!-- JOBSEEKER -->
+        <div class="panel" id="tab-jobseeker">
+            <h2>JobSeeker Profili</h2>
+            <button class="action" onclick="getJobSeekerProfile()">Profili Gətir</button>
+            <div class="row" style="margin-top:14px;">
+                <div><label>Skills</label><input id="jsSkills"></div>
+                <div><label>Work Experience</label><textarea id="jsExperience"></textarea></div>
+            </div>
+            <button class="action" onclick="updateJobSeekerProfile()">Yenilə</button>
 
-    <hr>
-    <h3>Nəticə:</h3>
-<pre id="output">-</pre>
+            <h2 style="margin-top:24px;">CV Yüklə</h2>
+            <input type="file" id="cvFile">
+            <button class="action" onclick="uploadCv()">Yüklə</button>
+        </div>
+
+        <!-- JOBPOST -->
+        <div class="panel" id="tab-jobpost">
+            <h2>Yeni Elan (Employer)</h2>
+            <div class="row">
+                <div><label>Title</label><input id="jpTitle"></div>
+                <div><label>Category</label><input id="jpCategory"></div>
+                <div><label>Location</label><input id="jpLocation"></div>
+                <div><label>Job Type</label><input id="jpJobType" placeholder="Full-time / Part-time / Remote"></div>
+                <div><label>Salary Min</label><input id="jpSalaryMin" type="number"></div>
+                <div><label>Salary Max</label><input id="jpSalaryMax" type="number"></div>
+                <div><label>Deadline</label><input id="jpDeadline" type="date"></div>
+                <div></div>
+                <div style="grid-column: span 2;"><label>Description</label><textarea id="jpDescription"></textarea></div>
+                <div style="grid-column: span 2;"><label>Requirements</label><textarea id="jpRequirements"></textarea></div>
+            </div>
+            <button class="action" onclick="createJobPost()">Elan Yarat</button>
+
+            <h2 style="margin-top:24px;">Elanlar</h2>
+            <button class="action" onclick="getAllJobs()">Bütün Elanlar</button>
+            <button class="action" onclick="getMyJobPosts()">Mənim Elanlarım (Employer)</button>
+        </div>
+
+        <!-- APPLICATION -->
+        <div class="panel" id="tab-application">
+            <h2>Elana Müraciət Et (JobSeeker)</h2>
+            <label>Job Post Id</label>
+            <input id="applyJobPostId" type="number">
+            <button class="action" onclick="apply()">Müraciət Et</button>
+
+            <h2 style="margin-top:24px;">Mənim Müraciətlərim (JobSeeker)</h2>
+            <button class="action" onclick="getMyApplications()">Göstər</button>
+
+            <h2 style="margin-top:24px;">Elana Gələn Müraciətlər (Employer)</h2>
+            <label>Job Post Id</label>
+            <input id="jobPostIdForApps" type="number">
+            <button class="action" onclick="getApplicationsForJobPost()">Göstər</button>
+
+            <h2 style="margin-top:24px;">Status Dəyiş (Employer)</h2>
+            <div class="row">
+                <div><label>Application Id</label><input id="appIdForStatus" type="number"></div>
+                <div>
+                    <label>Status</label>
+                    <select id="newStatus">
+                        <option>Applied</option>
+                        <option>Reviewed</option>
+                        <option>Shortlisted</option>
+                        <option>Rejected</option>
+                    </select>
+                </div>
+                <div style="grid-column: span 2;"><label>Employer Note</label><input id="employerNote"></div>
+            </div>
+            <button class="action" onclick="updateStatus()">Statusu Yenilə</button>
+        </div>
+
+        <!-- SAVEDJOB -->
+        <div class="panel" id="tab-savedjob">
+            <h2>Elan Saxla (JobSeeker)</h2>
+            <label>Job Post Id</label>
+            <input id="saveJobPostId" type="number">
+            <button class="action" onclick="saveJob()">Saxla</button>
+
+            <h2 style="margin-top:24px;">Saxlanılan Elanlarım</h2>
+            <button class="action" onclick="getMySavedJobs()">Göstər</button>
+
+            <h2 style="margin-top:24px;">Saxlanılanı Sil</h2>
+            <label>Job Post Id</label>
+            <input id="removeSavedJobId" type="number">
+            <button class="action" onclick="removeSavedJob()">Sil</button>
+        </div>
+
+        <h3>Nəticə:</h3>
+        <div id="output">-</div>
+    </div>
 
     <script>
 const BASE = window.location.origin + "/api";
 let token = "";
 
+function showTab(name) {
+          document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+          document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+          document.getElementById("tab-" + name).classList.add("active");
+          event.target.classList.add("active");
+}
+
 function val(id) {
-  const el = document.getElementById(id);
-  return el ? el.value : "";
+          const el = document.getElementById(id);
+          return el ? el.value : "";
 }
 
 function show(data) {
-  document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+          document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+}
+
+function setStatus(elId, ok, msg) {
+          const el = document.getElementById(elId);
+          if (!el) return;
+          el.textContent = msg;
+          el.className = "status " + (ok ? "ok" : "err");
+}
+
+function authHeaders(json = true) {
+          const headers = { "Authorization": "Bearer " + token };
+          if (json) headers["Content-Type"] = "application/json";
+          return headers;
 }
 
 async function register() {
-  const body = {
-    fullName: val("regFullName"),
-    email: val("regEmail"),
-    password: val("regPassword"),
-    role: val("regRole")
-  };
-  const res = await fetch(`${BASE}/Auth/register`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body)
-  });
-  const data = await res.json();
-  show(data);
-  if (data.token) {
-    token = data.token;
-    document.getElementById("tokenDisplay").textContent = token.substring(0, 30) + "...";
-  }
+          const body = {
+            fullName: val("regFullName"),
+            email: val("regEmail"),
+            password: val("regPassword"),
+            role: val("regRole")
+          };
+          const res = await fetch(`${BASE}/Auth/register`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+          });
+          const data = await res.json();
+          show(data);
+          setStatus("regStatus", res.ok, res.ok ? "✓ Qeydiyyat oldu, email-ə gələn kodu daxil et" : "✗ Xəta");
+          if (res.ok) {
+            document.getElementById("confirmEmail").value = body.email;
+          }
+}
+
+async function confirmEmail() {
+          const body = { email: val("confirmEmail"), code: val("confirmCode") };
+          const res = await fetch(`${BASE}/Auth/confirm-email`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+          });
+          const data = await res.json();
+          show(data);
+          setStatus("confirmStatus", res.ok, res.ok ? "✓ Təsdiqləndi" : "✗ " + (data.message || "Xəta"));
 }
 
 async function login() {
-  const body = {
-    email: val("loginEmail"),
-    password: val("loginPassword")
-  };
-  const res = await fetch(`${BASE}/Auth/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body)
-  });
-  const data = await res.json();
-  show(data);
-  if (data.token) {
-    token = data.token;
-    document.getElementById("tokenDisplay").textContent = token.substring(0, 30) + "...";
-  }
+          const body = { email: val("loginEmail"), password: val("loginPassword") };
+          const res = await fetch(`${BASE}/Auth/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+          });
+          const data = await res.json();
+          show(data);
+          if (data.token) {
+            token = data.token;
+            document.getElementById("tokenBar").textContent = "Token: " + token.substring(0, 50) + "...";
+            setStatus("loginStatus", true, "✓ Giriş edildi");
+          } else {
+            setStatus("loginStatus", false, "✗ " + (data.message || "Xəta"));
+          }
+}
+
+async function getEmployerProfile() {
+          const res = await fetch(`${BASE}/Employer/profile`, { headers: authHeaders() });
+          const data = await res.json();
+          show(data);
+          if (res.ok) {
+            document.getElementById("empCompanyName").value = data.companyName || "";
+            document.getElementById("empWebsite").value = data.website || "";
+            document.getElementById("empLocation").value = data.companyLocation || "";
+            document.getElementById("empDescription").value = data.companyDescription || "";
+          }
+}
+
+async function updateEmployerProfile() {
+          const body = {
+            companyName: val("empCompanyName"),
+            website: val("empWebsite"),
+            companyLocation: val("empLocation"),
+            companyDescription: val("empDescription")
+          };
+          const res = await fetch(`${BASE}/Employer/profile`, {
+            method: "PUT",
+            headers: authHeaders(),
+            body: JSON.stringify(body)
+          });
+          show(await res.json());
+}
+
+async function getJobSeekerProfile() {
+          const res = await fetch(`${BASE}/JobSeeker/profile`, { headers: authHeaders() });
+          const data = await res.json();
+          show(data);
+          if (res.ok) {
+            document.getElementById("jsSkills").value = data.skills || "";
+            document.getElementById("jsExperience").value = data.workExperience || "";
+          }
+}
+
+async function updateJobSeekerProfile() {
+          const body = { skills: val("jsSkills"), workExperience: val("jsExperience") };
+          const res = await fetch(`${BASE}/JobSeeker/profile`, {
+            method: "PUT",
+            headers: authHeaders(),
+            body: JSON.stringify(body)
+          });
+          show(await res.json());
+}
+
+async function uploadCv() {
+          const fileInput = document.getElementById("cvFile");
+          if (!fileInput.files.length) { show({ message: "Fayl seçilməyib" }); return; }
+          const formData = new FormData();
+          formData.append("file", fileInput.files[0]);
+          const res = await fetch(`${BASE}/JobSeeker/upload-cv`, {
+            method: "POST",
+            headers: { "Authorization": "Bearer " + token },
+            body: formData
+          });
+          show(await res.json());
 }
 
 async function createJobPost() {
-  const body = {
-    title: val("jpTitle"),
-    description: val("jpDescription"),
-    requirements: val("jpRequirements"),
-    category: val("jpCategory"),
-    location: val("jpLocation"),
-    jobType: val("jpJobType"),
-    salaryMin: parseFloat(val("jpSalaryMin")),
-    salaryMax: parseFloat(val("jpSalaryMax")),
-    deadline: val("jpDeadline")
-  };
-  const res = await fetch(`${BASE}/JobPost`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer " + token
-    },
-    body: JSON.stringify(body)
-  });
-  const data = await res.json();
-  show(data);
+          const body = {
+            title: val("jpTitle"),
+            description: val("jpDescription"),
+            requirements: val("jpRequirements"),
+            category: val("jpCategory"),
+            location: val("jpLocation"),
+            jobType: val("jpJobType"),
+            salaryMin: parseFloat(val("jpSalaryMin")) || 0,
+            salaryMax: parseFloat(val("jpSalaryMax")) || 0,
+            deadline: val("jpDeadline")
+          };
+          const res = await fetch(`${BASE}/JobPost`, {
+            method: "POST",
+            headers: authHeaders(),
+            body: JSON.stringify(body)
+          });
+          show(await res.json());
 }
 
 async function getAllJobs() {
-  const res = await fetch(`${BASE}/JobPost`);
-  const data = await res.json();
-  show(data);
+          const res = await fetch(`${BASE}/JobPost`);
+          show(await res.json());
+}
+
+async function getMyJobPosts() {
+          const res = await fetch(`${BASE}/JobPost/my-posts`, { headers: authHeaders() });
+          show(await res.json());
 }
 
 async function apply() {
-  const body = {
-    jobPostId: parseInt(val("applyJobPostId"))
-  };
-  const res = await fetch(`${BASE}/Application`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer " + token
-    },
-    body: JSON.stringify(body)
-  });
-  const data = await res.json();
-  show(data);
+          const body = { jobPostId: parseInt(val("applyJobPostId")) };
+          const res = await fetch(`${BASE}/Application`, {
+            method: "POST",
+            headers: authHeaders(),
+            body: JSON.stringify(body)
+          });
+          show(await res.json());
+}
+
+async function getMyApplications() {
+          const res = await fetch(`${BASE}/Application/my-applications`, { headers: authHeaders() });
+          show(await res.json());
+}
+
+async function getApplicationsForJobPost() {
+          const id = val("jobPostIdForApps");
+          const res = await fetch(`${BASE}/Application/job-post/${id}`, { headers: authHeaders() });
+          show(await res.json());
+}
+
+async function updateStatus() {
+          const id = val("appIdForStatus");
+          const body = { status: val("newStatus"), employerNote: val("employerNote") };
+          const res = await fetch(`${BASE}/Application/${id}/status`, {
+            method: "PUT",
+            headers: authHeaders(),
+            body: JSON.stringify(body)
+          });
+          show(await res.json());
+}
+
+async function saveJob() {
+          const id = val("saveJobPostId");
+          const res = await fetch(`${BASE}/SavedJob/${id}`, {
+            method: "POST",
+            headers: authHeaders()
+          });
+          show(await res.json());
+}
+
+async function getMySavedJobs() {
+          const res = await fetch(`${BASE}/SavedJob`, { headers: authHeaders() });
+          show(await res.json());
+}
+
+async function removeSavedJob() {
+          const id = val("removeSavedJobId");
+          const res = await fetch(`${BASE}/SavedJob/${id}`, {
+            method: "DELETE",
+            headers: authHeaders()
+          });
+          show(await res.json());
 }
     </script>
 </body>

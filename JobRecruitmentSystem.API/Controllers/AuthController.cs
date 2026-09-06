@@ -29,6 +29,20 @@ namespace JobRecruitmentSystem.API.Controllers
             }
         }
 
+        [HttpPost("confirm-email")]
+        public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailDto dto)
+        {
+            try
+            {
+                await _authService.ConfirmEmailAsync(dto);
+                return Ok(new { message = "Email təsdiqləndi." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {

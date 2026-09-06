@@ -14,6 +14,10 @@ namespace JobRecruitmentSystem.DAL.Entities
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public Employer Employer { get; set; }
+        
         public JobSeeker JobSeeker { get; set; }
+
+        public bool EmailConfirmed { get; set; } = false;
+        public string EmailConfirmationToken { get; set; }
     }
 }
