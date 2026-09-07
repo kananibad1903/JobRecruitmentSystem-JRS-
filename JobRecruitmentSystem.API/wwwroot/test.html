@@ -191,6 +191,22 @@
             </div>
             <button class="action" onclick="login()">Login</button>
             <span id="loginStatus" class="status"></span>
+
+            <h2 style="margin-top:24px;">Şifrəni Unutdum</h2>
+            <div class="row">
+                <div><label>Email</label><input id="forgotEmail"></div>
+            </div>
+            <button class="action" onclick="forgotPassword()">Kod Göndər</button>
+            <span id="forgotStatus" class="status"></span>
+
+            <h2 style="margin-top:24px;">Yeni Şifrə Təyin Et</h2>
+            <div class="row">
+                <div><label>Email</label><input id="resetEmail"></div>
+                <div><label>Kod</label><input id="resetCode"></div>
+                <div style="grid-column: span 2;"><label>Yeni Şifrə</label><input id="resetNewPassword" type="password"></div>
+            </div>
+            <button class="action" onclick="resetPassword()">Şifrəni Dəyiş</button>
+            <span id="resetStatus" class="status"></span>
         </div>
 
         <!-- EMPLOYER -->
@@ -376,6 +392,35 @@ async function login() {
           } else {
             setStatus("loginStatus", false, "✗ " + (data.message || "Xəta"));
           }
+}
+
+async function forgotPassword() {
+          const body = { email: val("forgotEmail") };
+          const res = await fetch(`${BASE}/Auth/forgot-password`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+          });
+          const data = await res.json();
+          show(data);
+          setStatus("forgotStatus", res.ok, res.ok ? "✓ Kod göndərildi" : "✗ " + (data.message || "Xəta"));
+          if (res.ok) document.getElementById("resetEmail").value = body.email;
+}
+
+async function resetPassword() {
+          const body = {
+            email: val("resetEmail"),
+            code: val("resetCode"),
+            newPassword: val("resetNewPassword")
+          };
+          const res = await fetch(`${BASE}/Auth/reset-password`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+          });
+          const data = await res.json();
+          show(data);
+          setStatus("resetStatus", res.ok, res.ok ? "✓ Şifrə dəyişdi" : "✗ " + (data.message || "Xəta"));
 }
 
 async function getEmployerProfile() {

@@ -19,5 +19,6 @@ namespace JobRecruitmentSystem.BLL.DTOs
         public decimal SalaryMax { get; set; }
         public DateTime Deadline { get; set; }
         public DateTime CreatedAt { get; set; }
+        public bool IsApproved { get; set; }
     }
 }

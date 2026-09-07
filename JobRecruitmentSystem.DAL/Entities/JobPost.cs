@@ -21,6 +21,7 @@ namespace JobRecruitmentSystem.DAL.Entities
         public decimal SalaryMax { get; set; }
         public DateTime Deadline { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public bool IsApproved { get; set; } = false;
 
         public ICollection<JobApplication> Applications { get; set; } = new List<JobApplication>();
         public ICollection<SavedJob> SavedJobs { get; set; } = new List<SavedJob>();
