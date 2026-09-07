@@ -1,71 +1,67 @@
-﻿namespace JobRecruitmentSystem.API.Controllers
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using JobRecruitmentSystem.BLL.Services.Interfaces;
+
+namespace JobRecruitmentSystem.API.Controllers
 {
-    using global::JobRecruitmentSystem.BLL.Services.Interfaces;
-
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Mvc;
-    using System.Security.Claims;
-
-    namespace JobRecruitmentSystem.API.Controllers
+    [ApiController]
+    [Route("api/[controller]")]
+    [Authorize(Roles = "JobSeeker")]
+    public class SavedJobController : ControllerBase
     {
-        [ApiController]
-        [Route("api/[controller]")]
-        [Authorize]
-        public class SavedJobController : ControllerBase
+        private readonly ISavedJobService _savedJobService;
+
+        public SavedJobController(ISavedJobService savedJobService)
         {
-            private readonly ISavedJobService _savedJobService;
+            _savedJobService = savedJobService;
+        }
 
-            public SavedJobController(ISavedJobService savedJobService)
+        [HttpPost("{jobPostId}")]
+        public async Task<IActionResult> Save(int jobPostId)
+        {
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            try
             {
-                _savedJobService = savedJobService;
+                var savedJob = await _savedJobService.SaveAsync(userId, jobPostId);
+                return Ok(savedJob);
             }
-
-            [HttpPost("{jobPostId}")]
-            public async Task<IActionResult> Save(int jobPostId)
+            catch (Exception ex)
             {
-                var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-                try
-                {
-                    var savedJob = await _savedJobService.SaveAsync(userId, jobPostId);
-                    return Ok(savedJob);
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(new { message = ex.Message });
-                }
+                return BadRequest(new { message = ex.Message });
             }
+        }
 
-            [HttpGet]
-            public async Task<IActionResult> GetMySavedJobs()
+        [HttpGet]
+        public async Task<IActionResult> GetMySavedJobs()
+        {
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            try
             {
-                var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-                try
-                {
-                    var savedJobs = await _savedJobService.GetMySavedJobsAsync(userId);
-                    return Ok(savedJobs);
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(new { message = ex.Message });
-                }
+                var savedJobs = await _savedJobService.GetMySavedJobsAsync(userId);
+                return Ok(savedJobs);
             }
-
-            [HttpDelete("{jobPostId}")]
-            public async Task<IActionResult> Remove(int jobPostId)
+            catch (Exception ex)
             {
-                var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+                return BadRequest(new { message = ex.Message });
+            }
+        }
 
-                try
-                {
-                    await _savedJobService.RemoveAsync(userId, jobPostId);
-                    return Ok(new { message = "Elan siyahıdan silindi." });
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(new { message = ex.Message });
-                }
+        [HttpDelete("{jobPostId}")]
+        public async Task<IActionResult> Remove(int jobPostId)
+        {
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            try
+            {
+                await _savedJobService.RemoveAsync(userId, jobPostId);
+                return Ok(new { message = "Elan siyahıdan silindi." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
             }
         }
     }

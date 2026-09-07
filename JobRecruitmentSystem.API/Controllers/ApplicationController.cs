@@ -1,88 +1,87 @@
-﻿namespace JobRecruitmentSystem.API.Controllers
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using JobRecruitmentSystem.BLL.DTOs;
+using JobRecruitmentSystem.BLL.Services.Interfaces;
+
+namespace JobRecruitmentSystem.API.Controllers
 {
-    using global::JobRecruitmentSystem.BLL.DTOs;
-    using global::JobRecruitmentSystem.BLL.Services.Interfaces;
-
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Mvc;
-    using System.Security.Claims;
-
-    namespace JobRecruitmentSystem.API.Controllers
+    [ApiController]
+    [Route("api/[controller]")]
+    public class ApplicationController : ControllerBase
     {
-        [ApiController]
-        [Route("api/[controller]")]
-        [Authorize]
-        public class ApplicationController : ControllerBase
+        private readonly IApplicationService _applicationService;
+
+        public ApplicationController(IApplicationService applicationService)
         {
-            private readonly IApplicationService _applicationService;
+            _applicationService = applicationService;
+        }
 
-            public ApplicationController(IApplicationService applicationService)
+        [HttpPost]
+        [Authorize(Roles = "JobSeeker")]
+        public async Task<IActionResult> Apply([FromBody] CreateApplicationDto dto)
+        {
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            try
             {
-                _applicationService = applicationService;
+                var application = await _applicationService.ApplyAsync(userId, dto);
+                return Ok(application);
             }
-
-            [HttpPost]
-            public async Task<IActionResult> Apply([FromBody] CreateApplicationDto dto)
+            catch (Exception ex)
             {
-                var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-                try
-                {
-                    var application = await _applicationService.ApplyAsync(userId, dto);
-                    return Ok(application);
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(new { message = ex.Message });
-                }
+                return BadRequest(new { message = ex.Message });
             }
+        }
 
-            [HttpGet("my-applications")]
-            public async Task<IActionResult> GetMyApplications()
+        [HttpGet("my-applications")]
+        [Authorize(Roles = "JobSeeker")]
+        public async Task<IActionResult> GetMyApplications()
+        {
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            try
             {
-                var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-                try
-                {
-                    var applications = await _applicationService.GetMyApplicationsAsync(userId);
-                    return Ok(applications);
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(new { message = ex.Message });
-                }
+                var applications = await _applicationService.GetMyApplicationsAsync(userId);
+                return Ok(applications);
             }
-
-            [HttpGet("job-post/{jobPostId}")]
-            public async Task<IActionResult> GetApplicationsForJobPost(int jobPostId)
+            catch (Exception ex)
             {
-                var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-                try
-                {
-                    var applications = await _applicationService.GetApplicationsForJobPostAsync(userId, jobPostId);
-                    return Ok(applications);
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(new { message = ex.Message });
-                }
+                return BadRequest(new { message = ex.Message });
             }
+        }
 
-            [HttpPut("{id}/status")]
-            public async Task<IActionResult> UpdateStatus(int id, [FromBody] UpdateApplicationStatusDto dto)
+        [HttpGet("job-post/{jobPostId}")]
+        [Authorize(Roles = "Employer")]
+        public async Task<IActionResult> GetApplicationsForJobPost(int jobPostId)
+        {
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            try
             {
-                var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+                var applications = await _applicationService.GetApplicationsForJobPostAsync(userId, jobPostId);
+                return Ok(applications);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
 
-                try
-                {
-                    var application = await _applicationService.UpdateStatusAsync(userId, id, dto);
-                    return Ok(application);
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(new { message = ex.Message });
-                }
+        [HttpPut("{id}/status")]
+        [Authorize(Roles = "Employer")]
+        public async Task<IActionResult> UpdateStatus(int id, [FromBody] UpdateApplicationStatusDto dto)
+        {
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            try
+            {
+                var application = await _applicationService.UpdateStatusAsync(userId, id, dto);
+                return Ok(application);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
             }
         }
     }

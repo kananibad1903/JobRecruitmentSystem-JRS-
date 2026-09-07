@@ -8,7 +8,7 @@ namespace JobRecruitmentSystem.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    [Authorize(Roles = "JobSeeker")]
     public class JobSeekerController : ControllerBase
     {
         private readonly IJobSeekerService _jobSeekerService;

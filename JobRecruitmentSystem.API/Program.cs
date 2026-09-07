@@ -55,6 +55,8 @@ builder.Services.AddScoped<IJobPostService, JobPostService>();
 builder.Services.AddScoped<IApplicationService, ApplicationService>();
 builder.Services.AddScoped<ISavedJobService, SavedJobService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IAdminService, AdminService>();
+builder.Services.AddHttpClient<IAiChatService, AiChatService>();
 
 builder.Services.AddAuthentication(options =>
 {

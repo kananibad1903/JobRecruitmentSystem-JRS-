@@ -1,55 +1,52 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using global::JobRecruitmentSystem.BLL.DTOs;
-using global::JobRecruitmentSystem.BLL.Services.Interfaces;
+﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
+using JobRecruitmentSystem.BLL.DTOs;
+using JobRecruitmentSystem.BLL.Services.Interfaces;
 
 namespace JobRecruitmentSystem.API.Controllers
 {
-    namespace JobRecruitmentSystem.API.Controllers
+    [ApiController]
+    [Route("api/[controller]")]
+    [Authorize(Roles = "Employer")]
+    public class EmployerController : ControllerBase
     {
-        [ApiController]
-        [Route("api/[controller]")]
-        [Authorize]
-        public class EmployerController : ControllerBase
+        private readonly IEmployerService _employerService;
+
+        public EmployerController(IEmployerService employerService)
         {
-            private readonly IEmployerService _employerService;
+            _employerService = employerService;
+        }
 
-            public EmployerController(IEmployerService employerService)
+        [HttpGet("profile")]
+        public async Task<IActionResult> GetProfile()
+        {
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            try
             {
-                _employerService = employerService;
+                var profile = await _employerService.GetByUserIdAsync(userId);
+                return Ok(profile);
             }
-
-            [HttpGet("profile")]
-            public async Task<IActionResult> GetProfile()
+            catch (Exception ex)
             {
-                var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-                try
-                {
-                    var profile = await _employerService.GetByUserIdAsync(userId);
-                    return Ok(profile);
-                }
-                catch (Exception ex)
-                {
-                    return NotFound(new { message = ex.Message });
-                }
+                return NotFound(new { message = ex.Message });
             }
+        }
 
-            [HttpPut("profile")]
-            public async Task<IActionResult> UpdateProfile([FromBody] UpdateEmployerProfileDto dto)
+        [HttpPut("profile")]
+        public async Task<IActionResult> UpdateProfile([FromBody] UpdateEmployerProfileDto dto)
+        {
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            try
             {
-                var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-                try
-                {
-                    var updated = await _employerService.UpdateProfileAsync(userId, dto);
-                    return Ok(updated);
-                }
-                catch (Exception ex)
-                {
-                    return NotFound(new { message = ex.Message });
-                }
+                var updated = await _employerService.UpdateProfileAsync(userId, dto);
+                return Ok(updated);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new { message = ex.Message });
             }
         }
     }
