@@ -35,9 +35,31 @@ namespace JobRecruitmentSystem.DAL.Repositories.Implementations
                 .ToListAsync(_context.JobPosts.Where(jp => jp.EmployerId == employerId));
         }
 
+        public async Task<List<JobPost>> GetApprovedAsync()
+        {
+            return await Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions
+                .ToListAsync(_context.JobPosts.Include(jp => jp.Employer).Where(jp => jp.IsApproved == true));
+        }
+
+        public async Task<List<JobPost>> GetPendingAsync()
+        {
+            return await Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions
+                .ToListAsync(_context.JobPosts.Include(jp => jp.Employer).Where(jp => jp.IsApproved == false));
+        }
+
+        public async Task ApproveAsync(int id)
+        {
+            var jobPost = await _context.JobPosts.FindAsync(id);
+            if (jobPost != null)
+            {
+                jobPost.IsApproved = true;
+                await _context.SaveChangesAsync();
+            }
+        }
+
         public async Task<List<JobPost>> SearchAsync(string category, string location, string jobType, decimal? minSalary, decimal? maxSalary)
         {
-            var query = _context.JobPosts.Include(jp => jp.Employer).AsQueryable();
+            var query = _context.JobPosts.Include(jp => jp.Employer).Where(jp => jp.IsApproved == true).AsQueryable();
 
             if (!string.IsNullOrEmpty(category))
                 query = query.Where(jp => jp.Category == category);

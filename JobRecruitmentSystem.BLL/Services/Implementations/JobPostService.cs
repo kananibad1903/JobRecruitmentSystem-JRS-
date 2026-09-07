@@ -32,7 +32,7 @@ namespace JobRecruitmentSystem.BLL.Services.Implementations
 
         public async Task<List<JobPostDto>> GetAllAsync()
         {
-            var jobPosts = await _jobPostRepository.GetAllAsync();
+            var jobPosts = await _jobPostRepository.GetApprovedAsync();
             return jobPosts.Select(MapToDto).ToList();
         }
 
@@ -54,6 +54,17 @@ namespace JobRecruitmentSystem.BLL.Services.Implementations
             return jobPosts.Select(MapToDto).ToList();
         }
 
+        public async Task<List<JobPostDto>> GetPendingAsync()
+        {
+            var jobPosts = await _jobPostRepository.GetPendingAsync();
+            return jobPosts.Select(MapToDto).ToList();
+        }
+
+        public async Task ApproveJobPostAsync(int jobPostId)
+        {
+            await _jobPostRepository.ApproveAsync(jobPostId);
+        }
+
         public async Task<JobPostDto> CreateAsync(int userId, CreateJobPostDto dto)
         {
             var employer = await _employerRepository.GetByUserIdAsync(userId);
@@ -73,7 +84,8 @@ namespace JobRecruitmentSystem.BLL.Services.Implementations
                 JobType = dto.JobType,
                 SalaryMin = dto.SalaryMin,
                 SalaryMax = dto.SalaryMax,
-                Deadline = dto.Deadline
+                Deadline = dto.Deadline,
+                IsApproved = false
             };
 
             await _jobPostRepository.AddAsync(jobPost);
@@ -154,7 +166,8 @@ namespace JobRecruitmentSystem.BLL.Services.Implementations
                 SalaryMin = jobPost.SalaryMin,
                 SalaryMax = jobPost.SalaryMax,
                 Deadline = jobPost.Deadline,
-                CreatedAt = jobPost.CreatedAt
+                CreatedAt = jobPost.CreatedAt,
+                IsApproved = jobPost.IsApproved
             };
         }
     }
