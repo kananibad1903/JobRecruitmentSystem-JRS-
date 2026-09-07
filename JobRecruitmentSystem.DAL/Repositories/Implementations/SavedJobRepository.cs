@@ -18,7 +18,10 @@ namespace JobRecruitmentSystem.DAL.Repositories.Implementations
         public async Task<List<SavedJob>> GetByJobSeekerIdAsync(int jobSeekerId)
         {
             return await Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions
-                .ToListAsync(_context.SavedJobs.Include(sj => sj.JobPost).Where(sj => sj.JobSeekerId == jobSeekerId));
+                .ToListAsync(_context.SavedJobs
+                    .Include(sj => sj.JobPost)
+                    .ThenInclude(jp => jp.Employer)
+                    .Where(sj => sj.JobSeekerId == jobSeekerId));
         }
 
         public async Task<bool> ExistsAsync(int jobSeekerId, int jobPostId)

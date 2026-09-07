@@ -1,5 +1,4 @@
-﻿
-using JobRecruitmentSystem.DAL.Entities;
+﻿using JobRecruitmentSystem.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace JobRecruitmentSystem.DAL.Data
@@ -37,6 +36,14 @@ namespace JobRecruitmentSystem.DAL.Data
                 .HasOne(jp => jp.Employer)
                 .WithMany(e => e.JobPosts)
                 .HasForeignKey(jp => jp.EmployerId);
+
+            modelBuilder.Entity<JobPost>()
+                .Property(jp => jp.SalaryMin)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<JobPost>()
+                .Property(jp => jp.SalaryMax)
+                .HasPrecision(18, 2);
 
             modelBuilder.Entity<JobApplication>()
                 .HasOne(a => a.JobSeeker)
