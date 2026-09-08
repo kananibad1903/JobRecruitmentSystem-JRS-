@@ -5,9 +5,9 @@
 
 <div class="row justify-content-center">
     <div class="col-md-8 col-lg-6">
-        <h1 class="h3 mb-4">@Loc.T("employer.profileTitle")</h1>
+        <h1 class="h3 mb-4"><i class="bi bi-building text-primary me-2"></i>@Loc.T("employer.profileTitle")</h1>
 
-        <form asp-controller="Employer" asp-action="Profile" method="post">
+        <form asp-controller="Employer" asp-action="Profile" method="post" class="js-loading-form">
             <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
 
             <div class="mb-3">

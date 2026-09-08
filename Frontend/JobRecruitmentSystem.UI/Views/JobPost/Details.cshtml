@@ -5,22 +5,22 @@
 }
 
 <div class="mb-3">
-    <a asp-controller="Home" asp-action="Index" class="text-decoration-none">&larr; @Loc.T("common.back")</a>
+    <a asp-controller="Home" asp-action="Index" class="text-decoration-none"><i class="bi bi-arrow-left"></i> @Loc.T("common.back")</a>
 </div>
 
 <div class="card">
     <div class="card-body">
         <h1 class="h3">@job.Title</h1>
-        <h2 class="h6 text-muted mb-3">@job.CompanyName</h2>
+        <h2 class="h6 text-muted mb-3"><i class="bi bi-building"></i> @job.CompanyName</h2>
 
-        <div class="row mb-3">
-            <div class="col-sm-6 col-lg-3"><strong>@Loc.T("job.category"):</strong> @job.Category</div>
-            <div class="col-sm-6 col-lg-3"><strong>@Loc.T("job.location"):</strong> @job.Location</div>
-            <div class="col-sm-6 col-lg-3"><strong>@Loc.T("job.jobType"):</strong> @job.JobType</div>
-            <div class="col-sm-6 col-lg-3"><strong>@Loc.T("job.salaryRange"):</strong> @job.SalaryMin.ToString("N0") - @job.SalaryMax.ToString("N0")</div>
+        <div class="row mb-3 job-meta">
+            <div class="col-sm-6 col-lg-3"><i class="bi bi-tag"></i> <strong>@Loc.T("job.category"):</strong> @job.Category</div>
+            <div class="col-sm-6 col-lg-3"><i class="bi bi-geo-alt-fill"></i> <strong>@Loc.T("job.location"):</strong> @job.Location</div>
+            <div class="col-sm-6 col-lg-3"><i class="bi bi-briefcase-fill"></i> <strong>@Loc.T("job.jobType"):</strong> @job.JobType</div>
+            <div class="col-sm-6 col-lg-3"><i class="bi bi-cash-coin"></i> <strong>@Loc.T("job.salaryRange"):</strong> @job.SalaryMin.ToString("N0") - @job.SalaryMax.ToString("N0")</div>
         </div>
 
-        <p class="text-muted"><strong>@Loc.T("job.deadline"):</strong> @job.Deadline.ToString("dd.MM.yyyy")</p>
+        <p class="text-muted"><i class="bi bi-calendar-event"></i> <strong>@Loc.T("job.deadline"):</strong> @job.Deadline.ToString("dd.MM.yyyy")</p>
 
         <h5>@Loc.T("job.description")</h5>
         <p style="white-space:pre-line">@job.Description</p>
@@ -34,13 +34,13 @@
                 @if (Model.CanApply)
                 {
                     <form asp-controller="JobPost" asp-action="Apply" asp-route-id="@job.Id" method="post">
-                        <button type="submit" class="btn btn-primary">@Loc.T("common.apply")</button>
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-send-check me-1"></i>@Loc.T("common.apply")</button>
                     </form>
                 }
                 @if (Model.CanSave)
                 {
                     <form asp-controller="JobPost" asp-action="Save" asp-route-id="@job.Id" method="post">
-                        <button type="submit" class="btn btn-outline-secondary">@Loc.T("common.save")</button>
+                        <button type="submit" class="btn btn-outline-secondary"><i class="bi bi-bookmark-heart me-1"></i>@Loc.T("common.save")</button>
                     </form>
                 }
             </div>

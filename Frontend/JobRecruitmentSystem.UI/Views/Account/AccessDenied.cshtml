@@ -2,7 +2,7 @@
     ViewData["Title"] = "Access Denied";
 }
 
-<div class="text-center py-5">
-    <h1 class="display-6">🚫 @Loc.T("errors.accessDenied")</h1>
-    <a asp-controller="Home" asp-action="Index" class="btn btn-primary mt-3">@Loc.T("nav.home")</a>
+<partial name="_EmptyState" model="@Loc.T("errors.accessDenied")" />
+<div class="text-center">
+    <a asp-controller="Home" asp-action="Index" class="btn btn-primary"><i class="bi bi-house-door me-1"></i>@Loc.T("nav.home")</a>
 </div>

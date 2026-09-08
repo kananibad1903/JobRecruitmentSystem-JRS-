@@ -10,13 +10,40 @@
         return;
     }
 
+    function greetWiggle() {
+        toggleBtn.classList.remove('chat-toggle-idle');
+        toggleBtn.classList.add('chat-toggle-greet');
+        setTimeout(function () {
+            toggleBtn.classList.remove('chat-toggle-greet');
+            toggleBtn.classList.add('chat-toggle-idle');
+        }, 600);
+    }
+
+    function openChat() {
+        chatBox.classList.remove('d-none');
+        // force reflow so the opacity/transform transition actually plays
+        void chatBox.offsetWidth;
+        chatBox.classList.add('chat-box-visible');
+        greetWiggle();
+        input.focus();
+    }
+
+    function closeChat() {
+        chatBox.classList.remove('chat-box-visible');
+        window.setTimeout(function () {
+            chatBox.classList.add('d-none');
+        }, 300);
+    }
+
     toggleBtn.addEventListener('click', function () {
-        chatBox.classList.toggle('d-none');
+        if (chatBox.classList.contains('chat-box-visible')) {
+            closeChat();
+        } else {
+            openChat();
+        }
     });
 
-    closeBtn.addEventListener('click', function () {
-        chatBox.classList.add('d-none');
-    });
+    closeBtn.addEventListener('click', closeChat);
 
     function appendMessage(text, sender) {
         var el = document.createElement('div');

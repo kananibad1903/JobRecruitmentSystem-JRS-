@@ -70,6 +70,9 @@
 
   "home.title": "Job Listings",
   "home.subtitle": "Find the job that fits you",
+  "home.sloganPart1": "There's an ",
+  "home.sloganHighlight": "opportunity",
+  "home.sloganPart2": " in every corner!",
   "home.noResults": "No job posts found.",
   "home.salary": "Salary",
   "home.deadline": "Deadline",
@@ -143,11 +146,13 @@
 
   "chat.title": "AI Assistant",
   "chat.placeholder": "Type your question...",
-  "chat.greeting": "Hello! How can I help you?",
+  "chat.greeting": "Hi, I'm qarİŞqa, how can I help you?",
 
   "errors.generic": "Something went wrong.",
   "errors.accessDenied": "You don't have access to this page.",
   "errors.notFound": "Page not found.",
 
-  "footer.rights": "All rights reserved."
+  "footer.rights": "All rights reserved.",
+
+  "empty.antAlt": "Searching ant"
 }

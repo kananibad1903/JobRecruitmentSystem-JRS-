@@ -3,11 +3,11 @@
     ViewData["Title"] = Loc.T("jobseeker.savedJobsTitle");
 }
 
-<h1 class="h3 mb-4">@Loc.T("jobseeker.savedJobsTitle")</h1>
+<h1 class="h3 mb-4"><i class="bi bi-bookmark-heart text-primary me-2"></i>@Loc.T("jobseeker.savedJobsTitle")</h1>
 
 @if (!Model.Any())
 {
-    <p class="text-muted">@Loc.T("jobseeker.noSavedJobs")</p>
+    <partial name="_EmptyState" model="@Loc.T("jobseeker.noSavedJobs")" />
 }
 else
 {

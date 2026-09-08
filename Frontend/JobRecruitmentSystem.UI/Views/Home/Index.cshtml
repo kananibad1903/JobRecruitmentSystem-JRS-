@@ -3,36 +3,63 @@
     ViewData["Title"] = Loc.T("home.title");
 }
 
-<div class="mb-4">
-    <h1 class="h3">@Loc.T("home.title")</h1>
-    <p class="text-muted">@Loc.T("home.subtitle")</p>
-</div>
+<section class="hero-section p-4 p-md-5 mb-4">
+    <div class="row align-items-center g-4">
+        <div class="col-lg-7">
+            <h1 class="hero-title mb-2">@Loc.T("home.title")</h1>
+            <p class="hero-slogan">
+                @Loc.T("home.sloganPart1")<span class="slogan-highlight">@Loc.T("home.sloganHighlight")</span>@Loc.T("home.sloganPart2")
+            </p>
+            <p class="hero-subtitle">@Loc.T("home.subtitle")</p>
+        </div>
+        <div class="col-lg-5 d-none d-lg-block hero-icon-wrap">
+            <i class="bi bi-briefcase hero-icon"></i>
+        </div>
+    </div>
+</section>
 
-<form method="get" asp-controller="Home" asp-action="Index" class="row g-2 mb-4">
-    <div class="col-md-3">
-        <input type="text" class="form-control" name="category" placeholder="@Loc.T("common.category")" value="@Model.Category" />
-    </div>
-    <div class="col-md-3">
-        <input type="text" class="form-control" name="location" placeholder="@Loc.T("common.location")" value="@Model.Location" />
-    </div>
-    <div class="col-md-2">
-        <input type="text" class="form-control" name="jobType" placeholder="@Loc.T("common.jobType")" value="@Model.JobType" />
-    </div>
-    <div class="col-md-2">
-        <input type="number" class="form-control" name="minSalary" placeholder="@Loc.T("common.minSalary")" value="@Model.MinSalary" />
-    </div>
-    <div class="col-md-2">
-        <input type="number" class="form-control" name="maxSalary" placeholder="@Loc.T("common.maxSalary")" value="@Model.MaxSalary" />
-    </div>
-    <div class="col-12">
-        <button type="submit" class="btn btn-primary">@Loc.T("common.search")</button>
-        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">@Loc.T("common.cancel")</a>
-    </div>
-</form>
+<div class="filter-card p-3 p-md-4 mb-4">
+    <form method="get" asp-controller="Home" asp-action="Index" class="row g-2 js-loading-form">
+        <div class="col-md-3">
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-tag"></i></span>
+                <input type="text" class="form-control" name="category" placeholder="@Loc.T("common.category")" value="@Model.Category" />
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+                <input type="text" class="form-control" name="location" placeholder="@Loc.T("common.location")" value="@Model.Location" />
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-briefcase"></i></span>
+                <input type="text" class="form-control" name="jobType" placeholder="@Loc.T("common.jobType")" value="@Model.JobType" />
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-cash-coin"></i></span>
+                <input type="number" class="form-control" name="minSalary" placeholder="@Loc.T("common.minSalary")" value="@Model.MinSalary" />
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-cash-coin"></i></span>
+                <input type="number" class="form-control" name="maxSalary" placeholder="@Loc.T("common.maxSalary")" value="@Model.MaxSalary" />
+            </div>
+        </div>
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary"><i class="bi bi-search me-1"></i>@Loc.T("common.search")</button>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">@Loc.T("common.cancel")</a>
+        </div>
+    </form>
+</div>
 
 @if (!Model.Jobs.Any())
 {
-    <p class="text-muted">@Loc.T("home.noResults")</p>
+    <partial name="_EmptyState" model="@Loc.T("home.noResults")" />
 }
 else
 {
@@ -44,9 +71,9 @@ else
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">@job.Title</h5>
                         <h6 class="card-subtitle mb-2 text-muted">@job.CompanyName</h6>
-                        <p class="mb-1"><small>📍 @job.Location &nbsp;•&nbsp; 🕘 @job.JobType</small></p>
+                        <p class="mb-1 job-meta"><small><i class="bi bi-geo-alt-fill"></i> @job.Location &nbsp;•&nbsp; <i class="bi bi-clock-fill"></i> @job.JobType</small></p>
                         <p class="mb-2"><strong>@Loc.T("home.salary"):</strong> @job.SalaryMin.ToString("N0") - @job.SalaryMax.ToString("N0")</p>
-                        <p class="text-muted small mb-3">@Loc.T("home.deadline"): @job.Deadline.ToString("dd.MM.yyyy")</p>
+                        <p class="text-muted small mb-3"><i class="bi bi-calendar-event"></i> @Loc.T("home.deadline"): @job.Deadline.ToString("dd.MM.yyyy")</p>
                         <a asp-controller="JobPost" asp-action="Details" asp-route-id="@job.Id" class="btn btn-outline-primary mt-auto">@Loc.T("home.viewDetails")</a>
                     </div>
                 </div>

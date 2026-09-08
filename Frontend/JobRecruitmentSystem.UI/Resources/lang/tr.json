@@ -70,6 +70,9 @@
 
   "home.title": "İş İlanları",
   "home.subtitle": "Size uygun iş ilanını bulun",
+  "home.sloganPart1": "Her köşede bir ",
+  "home.sloganHighlight": "fırsat",
+  "home.sloganPart2": " var!",
   "home.noResults": "İlan bulunamadı.",
   "home.salary": "Maaş",
   "home.deadline": "Son tarih",
@@ -143,11 +146,13 @@
 
   "chat.title": "AI Asistan",
   "chat.placeholder": "Sorunuzu yazın...",
-  "chat.greeting": "Merhaba! Size nasıl yardımcı olabilirim?",
+  "chat.greeting": "Merhaba, ben qarİŞqa, sana nasıl yardımcı olabilirim?",
 
   "errors.generic": "Bir hata oluştu.",
   "errors.accessDenied": "Bu sayfaya erişim izniniz yok.",
   "errors.notFound": "Sayfa bulunamadı.",
 
-  "footer.rights": "Tüm hakları saklıdır."
+  "footer.rights": "Tüm hakları saklıdır.",
+
+  "empty.antAlt": "Arayan karınca"
 }

@@ -3,9 +3,9 @@
     ViewData["Title"] = Loc.T("employer.createTitle");
 }
 
-<h1 class="h3 mb-4">@Loc.T("employer.createTitle")</h1>
+<h1 class="h3 mb-4"><i class="bi bi-plus-circle text-primary me-2"></i>@Loc.T("employer.createTitle")</h1>
 
-<form asp-controller="Employer" asp-action="Create" method="post">
+<form asp-controller="Employer" asp-action="Create" method="post" class="js-loading-form">
     <partial name="_JobPostForm" />
 </form>
 

@@ -4,11 +4,11 @@
     Layout = "_AdminLayout";
 }
 
-<h1 class="h3 mb-4">@Loc.T("admin.pendingTitle")</h1>
+<h1 class="h3 mb-4"><i class="bi bi-hourglass-split text-primary me-2"></i>@Loc.T("admin.pendingTitle")</h1>
 
 @if (!Model.Any())
 {
-    <p class="text-muted">@Loc.T("admin.noPending")</p>
+    <partial name="_EmptyState" model="@Loc.T("admin.noPending")" />
 }
 else
 {
@@ -32,7 +32,7 @@ else
                         <td class="d-flex gap-2">
                             <a asp-controller="JobPost" asp-action="Details" asp-route-id="@job.Id" class="btn btn-outline-secondary btn-sm">@Loc.T("common.view")</a>
                             <form asp-controller="Admin" asp-action="Approve" asp-route-id="@job.Id" asp-route-returnAction="PendingJobPosts" method="post">
-                                <button type="submit" class="btn btn-success btn-sm">@Loc.T("admin.approve")</button>
+                                <button type="submit" class="btn btn-success btn-sm"><i class="bi bi-check-circle me-1"></i>@Loc.T("admin.approve")</button>
                             </form>
                             <form asp-controller="Admin" asp-action="DeleteJobPost" asp-route-id="@job.Id" asp-route-returnAction="PendingJobPosts" method="post" data-confirm="@Loc.T("common.confirmDelete")">
                                 <button type="submit" class="btn btn-outline-danger btn-sm">@Loc.T("admin.deleteJobPost")</button>

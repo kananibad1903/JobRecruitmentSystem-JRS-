@@ -70,6 +70,9 @@
 
   "home.title": "İş elanları",
   "home.subtitle": "Sizə uyğun iş elanını tapın",
+  "home.sloganPart1": "Hər qar",
+  "home.sloganHighlight": "ış",
+  "home.sloganPart2": "ında bir fürsət var!",
   "home.noResults": "Heç bir elan tapılmadı.",
   "home.salary": "Maaş",
   "home.deadline": "Son tarix",
@@ -143,11 +146,13 @@
 
   "chat.title": "AI Köməkçi",
   "chat.placeholder": "Sualınızı yazın...",
-  "chat.greeting": "Salam! Sizə necə kömək edə bilərəm?",
+  "chat.greeting": "Salam, mən qarİŞqayam, sənə necə kömək edə bilərəm?",
 
   "errors.generic": "Xəta baş verdi.",
   "errors.accessDenied": "Bu səhifəyə giriş icazəniz yoxdur.",
   "errors.notFound": "Səhifə tapılmadı.",
 
-  "footer.rights": "Bütün hüquqlar qorunur."
+  "footer.rights": "Bütün hüquqlar qorunur.",
+
+  "empty.antAlt": "Axtaran qarışqa"
 }

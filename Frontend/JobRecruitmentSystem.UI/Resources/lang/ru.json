@@ -70,6 +70,9 @@
 
   "home.title": "Вакансии",
   "home.subtitle": "Найдите подходящую вам работу",
+  "home.sloganPart1": "В каждом уголке есть ",
+  "home.sloganHighlight": "возможность",
+  "home.sloganPart2": "!",
   "home.noResults": "Вакансии не найдены.",
   "home.salary": "Зарплата",
   "home.deadline": "Крайний срок",
@@ -143,11 +146,13 @@
 
   "chat.title": "ИИ-помощник",
   "chat.placeholder": "Введите ваш вопрос...",
-  "chat.greeting": "Здравствуйте! Чем могу помочь?",
+  "chat.greeting": "Привет, я qarİŞqa, чем могу помочь?",
 
   "errors.generic": "Произошла ошибка.",
   "errors.accessDenied": "У вас нет доступа к этой странице.",
   "errors.notFound": "Страница не найдена.",
 
-  "footer.rights": "Все права защищены."
+  "footer.rights": "Все права защищены.",
+
+  "empty.antAlt": "Ищущий муравей"
 }
