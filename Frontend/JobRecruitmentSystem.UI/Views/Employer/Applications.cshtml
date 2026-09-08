@@ -1,0 +1,66 @@
+@model List<ApplicationViewModel>
+@{
+    ViewData["Title"] = Loc.T("employer.applicationsTitle");
+    var statuses = new[] { "Applied", "Reviewed", "Shortlisted", "Rejected" };
+}
+
+<div class="mb-3">
+    <a asp-controller="Employer" asp-action="MyPosts" class="text-decoration-none">&larr; @Loc.T("common.back")</a>
+</div>
+
+<h1 class="h3 mb-4">@Loc.T("employer.applicationsTitle")</h1>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">@Loc.T("employer.noApplications")</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>@Loc.T("auth.fullName")</th>
+                    <th>@Loc.T("jobseeker.appliedAt")</th>
+                    <th>@Loc.T("common.status")</th>
+                    <th>@Loc.T("employer.employerNote")</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var app in Model)
+                {
+                    <tr>
+                        <td>@app.JobSeekerName</td>
+                        <td>@app.AppliedAt.ToString("dd.MM.yyyy")</td>
+                        <form asp-controller="Employer" asp-action="UpdateStatus" method="post" class="contents">
+                            <input type="hidden" name="Id" value="@app.Id" />
+                            <input type="hidden" name="JobPostId" value="@ViewBag.JobPostId" />
+                            <td style="min-width:160px;">
+                                <select name="Status" class="form-select form-select-sm">
+                                    @foreach (var status in statuses)
+                                    {
+                                        if (status == app.Status)
+                                        {
+                                            <option value="@status" selected>@Loc.T("status." + status.ToLower())</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@status">@Loc.T("status." + status.ToLower())</option>
+                                        }
+                                    }
+                                </select>
+                            </td>
+                            <td style="min-width:200px;">
+                                <input type="text" name="EmployerNote" value="@app.EmployerNote" class="form-control form-control-sm" />
+                            </td>
+                            <td>
+                                <button type="submit" class="btn btn-outline-primary btn-sm">@Loc.T("employer.updateStatus")</button>
+                            </td>
+                        </form>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

@@ -1,0 +1,33 @@
+@model ConfirmEmailViewModel
+@{
+    ViewData["Title"] = Loc.T("auth.confirmEmailTitle");
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <h1 class="h3 mb-3 text-center">@Loc.T("auth.confirmEmailTitle")</h1>
+        <p class="text-muted text-center">@Loc.T("auth.confirmEmailText")</p>
+
+        <form asp-controller="Account" asp-action="ConfirmEmail" method="post">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+            <div class="mb-3">
+                <label class="form-label">@Loc.T("auth.email")</label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">@Loc.T("auth.confirmCode")</label>
+                <input asp-for="Code" class="form-control" maxlength="6" />
+                <span asp-validation-for="Code" class="text-danger small"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">@Loc.T("common.submit")</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

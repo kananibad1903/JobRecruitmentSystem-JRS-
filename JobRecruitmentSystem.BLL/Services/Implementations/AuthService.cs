@@ -50,7 +50,8 @@ namespace JobRecruitmentSystem.BLL.Services.Implementations
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
                 Role = dto.Role,
                 EmailConfirmed = false,
-                EmailConfirmationToken = code
+                EmailConfirmationToken = code,
+                PasswordResetCode = string.Empty
             };
 
             await _userRepository.AddAsync(user);

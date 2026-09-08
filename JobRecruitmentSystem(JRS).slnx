@@ -4,5 +4,7 @@
     <Project Path="JobRecruitmentSystem.BLL/JobRecruitmentSystem.BLL.csproj" />
     <Project Path="JobRecruitmentSystem.DAL/JobRecruitmentSystem.DAL.csproj" />
   </Folder>
-  <Folder Name="/Frontend/" />
+  <Folder Name="/Frontend/">
+    <Project Path="Frontend/JobRecruitmentSystem.UI/JobRecruitmentSystem.UI.csproj" />
+  </Folder>
 </Solution>

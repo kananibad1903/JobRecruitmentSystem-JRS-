@@ -1,0 +1,47 @@
+@model List<JobPostViewModel>
+@{
+    ViewData["Title"] = Loc.T("admin.jobPostsTitle");
+    Layout = "_AdminLayout";
+}
+
+<h1 class="h3 mb-4">@Loc.T("admin.jobPostsTitle")</h1>
+
+<div class="table-responsive">
+    <table class="table align-middle bg-white">
+        <thead>
+            <tr>
+                <th>@Loc.T("employer.title")</th>
+                <th>@Loc.T("job.company")</th>
+                <th>@Loc.T("common.status")</th>
+                <th>@Loc.T("job.deadline")</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var job in Model)
+            {
+                <tr>
+                    <td>@job.Title</td>
+                    <td>@job.CompanyName</td>
+                    <td>
+                        @if (job.IsApproved)
+                        {
+                            <span class="badge badge-approved">@Loc.T("employer.approved")</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-pending">@Loc.T("employer.pendingApproval")</span>
+                        }
+                    </td>
+                    <td>@job.Deadline.ToString("dd.MM.yyyy")</td>
+                    <td class="d-flex gap-2">
+                        <a asp-controller="JobPost" asp-action="Details" asp-route-id="@job.Id" class="btn btn-outline-secondary btn-sm">@Loc.T("common.view")</a>
+                        <form asp-controller="Admin" asp-action="DeleteJobPost" asp-route-id="@job.Id" asp-route-returnAction="JobPosts" method="post" data-confirm="@Loc.T("common.confirmDelete")">
+                            <button type="submit" class="btn btn-outline-danger btn-sm">@Loc.T("admin.deleteJobPost")</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

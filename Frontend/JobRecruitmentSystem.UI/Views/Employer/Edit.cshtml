@@ -1,0 +1,14 @@
+@model JobPostFormViewModel
+@{
+    ViewData["Title"] = Loc.T("employer.editTitle");
+}
+
+<h1 class="h3 mb-4">@Loc.T("employer.editTitle")</h1>
+
+<form asp-controller="Employer" asp-action="Edit" asp-route-id="@Model.Id" method="post">
+    <partial name="_JobPostForm" />
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

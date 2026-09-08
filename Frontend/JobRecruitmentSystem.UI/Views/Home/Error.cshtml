@@ -1,0 +1,13 @@
+@model ErrorViewModel
+@{
+    ViewData["Title"] = "Error";
+}
+
+<div class="text-center py-5">
+    <h1 class="display-6">@Loc.T("errors.generic")</h1>
+    @if (Model.ShowRequestId)
+    {
+        <p class="text-muted">Request ID: <code>@Model.RequestId</code></p>
+    }
+    <a asp-controller="Home" asp-action="Index" class="btn btn-primary mt-3">@Loc.T("nav.home")</a>
+</div>

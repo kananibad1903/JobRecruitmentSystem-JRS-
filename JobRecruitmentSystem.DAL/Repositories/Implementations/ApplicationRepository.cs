@@ -32,7 +32,9 @@ namespace JobRecruitmentSystem.DAL.Repositories.Implementations
         public async Task<List<JobApplication>> GetByJobPostIdAsync(int jobPostId)
         {
             return await Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions
-                .ToListAsync(_context.Applications.Include(a => a.JobSeeker).Where(a => a.JobPostId == jobPostId));
+                .ToListAsync(_context.Applications
+                    .Include(a => a.JobSeeker).ThenInclude(js => js.User)
+                    .Where(a => a.JobPostId == jobPostId));
         }
 
         public async Task<bool> ExistsAsync(int jobSeekerId, int jobPostId)

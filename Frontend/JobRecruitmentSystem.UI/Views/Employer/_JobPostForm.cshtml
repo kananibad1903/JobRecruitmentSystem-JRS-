@@ -1,0 +1,60 @@
+@model JobPostFormViewModel
+
+<div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+<input type="hidden" asp-for="Id" />
+
+<div class="mb-3">
+    <label class="form-label">@Loc.T("employer.title")</label>
+    <input asp-for="Title" class="form-control" />
+    <span asp-validation-for="Title" class="text-danger small"></span>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">@Loc.T("job.description")</label>
+    <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+    <span asp-validation-for="Description" class="text-danger small"></span>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">@Loc.T("job.requirements")</label>
+    <textarea asp-for="Requirements" class="form-control" rows="4"></textarea>
+    <span asp-validation-for="Requirements" class="text-danger small"></span>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-3">
+        <label class="form-label">@Loc.T("job.category")</label>
+        <input asp-for="Category" class="form-control" />
+        <span asp-validation-for="Category" class="text-danger small"></span>
+    </div>
+    <div class="col-md-4 mb-3">
+        <label class="form-label">@Loc.T("job.location")</label>
+        <input asp-for="Location" class="form-control" />
+        <span asp-validation-for="Location" class="text-danger small"></span>
+    </div>
+    <div class="col-md-4 mb-3">
+        <label class="form-label">@Loc.T("job.jobType")</label>
+        <input asp-for="JobType" class="form-control" />
+        <span asp-validation-for="JobType" class="text-danger small"></span>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-3">
+        <label class="form-label">@Loc.T("common.minSalary")</label>
+        <input asp-for="SalaryMin" class="form-control" />
+        <span asp-validation-for="SalaryMin" class="text-danger small"></span>
+    </div>
+    <div class="col-md-4 mb-3">
+        <label class="form-label">@Loc.T("common.maxSalary")</label>
+        <input asp-for="SalaryMax" class="form-control" />
+        <span asp-validation-for="SalaryMax" class="text-danger small"></span>
+    </div>
+    <div class="col-md-4 mb-3">
+        <label class="form-label">@Loc.T("job.deadline")</label>
+        <input asp-for="Deadline" class="form-control" />
+        <span asp-validation-for="Deadline" class="text-danger small"></span>
+    </div>
+</div>
+
+<button type="submit" class="btn btn-primary">@Loc.T("common.submit")</button>

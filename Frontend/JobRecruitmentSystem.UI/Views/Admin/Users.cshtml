@@ -1,0 +1,49 @@
+@model List<AdminUserViewModel>
+@{
+    ViewData["Title"] = Loc.T("admin.usersTitle");
+    Layout = "_AdminLayout";
+}
+
+<h1 class="h3 mb-4">@Loc.T("admin.usersTitle")</h1>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">@Loc.T("admin.noUsers")</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table align-middle bg-white">
+            <thead>
+                <tr>
+                    <th>@Loc.T("auth.fullName")</th>
+                    <th>@Loc.T("auth.email")</th>
+                    <th>@Loc.T("admin.role")</th>
+                    <th>@Loc.T("admin.emailConfirmed")</th>
+                    <th>@Loc.T("admin.createdAt")</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td>@user.FullName</td>
+                        <td>@user.Email</td>
+                        <td><span class="badge bg-secondary">@user.Role</span></td>
+                        <td>@(user.EmailConfirmed ? Loc.T("common.yes") : Loc.T("common.no"))</td>
+                        <td>@user.CreatedAt.ToString("dd.MM.yyyy")</td>
+                        <td>
+                            @if (user.Role != "Admin")
+                            {
+                                <form asp-controller="Admin" asp-action="DeleteUser" asp-route-id="@user.Id" method="post" data-confirm="@Loc.T("common.confirmDelete")">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">@Loc.T("admin.deleteUser")</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

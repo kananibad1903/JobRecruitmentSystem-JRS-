@@ -1,0 +1,83 @@
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+.job-card {
+    transition: transform .15s ease, box-shadow .15s ease;
+    height: 100%;
+}
+
+.job-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .1);
+}
+
+.badge-pending {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.badge-approved {
+    background-color: #198754;
+}
+
+.contents {
+    display: contents;
+}
+
+#chat-widget {
+    position: fixed;
+    right: 1.5rem;
+    bottom: 1.5rem;
+    z-index: 1050;
+}
+
+#chat-toggle-btn {
+    width: 56px;
+    height: 56px;
+    font-size: 1.5rem;
+}
+
+#chat-box {
+    width: 320px;
+    max-height: 420px;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    right: 0;
+    bottom: 68px;
+}
+
+#chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    max-height: 260px;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+
+.chat-message {
+    padding: .4rem .7rem;
+    border-radius: .75rem;
+    max-width: 85%;
+    font-size: .9rem;
+}
+
+.chat-message-user {
+    align-self: flex-end;
+    background-color: #0d6efd;
+    color: #fff;
+}
+
+.chat-message-bot {
+    align-self: flex-start;
+    background-color: #f1f1f1;
+    color: #212529;
+}

@@ -1,0 +1,50 @@
+@model JobSeekerProfileViewModel
+@{
+    ViewData["Title"] = Loc.T("jobseeker.profileTitle");
+    var apiBaseUrl = (Configuration["ApiSettings:BaseUrl"] ?? string.Empty).Replace("/api", string.Empty);
+}
+
+<h1 class="h3 mb-4">@Loc.T("jobseeker.profileTitle")</h1>
+
+<div class="row g-4">
+    <div class="col-md-7">
+        <form asp-controller="JobSeeker" asp-action="Profile" method="post">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+            <div class="mb-3">
+                <label class="form-label">@Loc.T("jobseeker.skills")</label>
+                <textarea asp-for="Skills" class="form-control" rows="3"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">@Loc.T("jobseeker.workExperience")</label>
+                <textarea asp-for="WorkExperience" class="form-control" rows="5"></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">@Loc.T("common.submit")</button>
+        </form>
+    </div>
+
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">@Loc.T("jobseeker.cv")</h5>
+                @if (!string.IsNullOrWhiteSpace(Model.CvFilePath))
+                {
+                    <p><a href="@(apiBaseUrl + Model.CvFilePath)" target="_blank">@Loc.T("jobseeker.currentCv")</a></p>
+                }
+                else
+                {
+                    <p class="text-muted">@Loc.T("jobseeker.noCv")</p>
+                }
+
+                <form asp-controller="JobSeeker" asp-action="UploadCv" method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <input type="file" name="file" class="form-control" accept=".pdf,.doc,.docx" required />
+                    </div>
+                    <button type="submit" class="btn btn-outline-primary">@Loc.T("jobseeker.uploadCv")</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

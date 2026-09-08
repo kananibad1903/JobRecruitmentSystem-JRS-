@@ -1,0 +1,56 @@
+@model JobPostDetailViewModel
+@{
+    var job = Model.Job;
+    ViewData["Title"] = job.Title;
+}
+
+<div class="mb-3">
+    <a asp-controller="Home" asp-action="Index" class="text-decoration-none">&larr; @Loc.T("common.back")</a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <h1 class="h3">@job.Title</h1>
+        <h2 class="h6 text-muted mb-3">@job.CompanyName</h2>
+
+        <div class="row mb-3">
+            <div class="col-sm-6 col-lg-3"><strong>@Loc.T("job.category"):</strong> @job.Category</div>
+            <div class="col-sm-6 col-lg-3"><strong>@Loc.T("job.location"):</strong> @job.Location</div>
+            <div class="col-sm-6 col-lg-3"><strong>@Loc.T("job.jobType"):</strong> @job.JobType</div>
+            <div class="col-sm-6 col-lg-3"><strong>@Loc.T("job.salaryRange"):</strong> @job.SalaryMin.ToString("N0") - @job.SalaryMax.ToString("N0")</div>
+        </div>
+
+        <p class="text-muted"><strong>@Loc.T("job.deadline"):</strong> @job.Deadline.ToString("dd.MM.yyyy")</p>
+
+        <h5>@Loc.T("job.description")</h5>
+        <p style="white-space:pre-line">@job.Description</p>
+
+        <h5>@Loc.T("job.requirements")</h5>
+        <p style="white-space:pre-line">@job.Requirements</p>
+
+        @if (Model.CanApply || Model.CanSave)
+        {
+            <div class="d-flex gap-2 mt-4">
+                @if (Model.CanApply)
+                {
+                    <form asp-controller="JobPost" asp-action="Apply" asp-route-id="@job.Id" method="post">
+                        <button type="submit" class="btn btn-primary">@Loc.T("common.apply")</button>
+                    </form>
+                }
+                @if (Model.CanSave)
+                {
+                    <form asp-controller="JobPost" asp-action="Save" asp-route-id="@job.Id" method="post">
+                        <button type="submit" class="btn btn-outline-secondary">@Loc.T("common.save")</button>
+                    </form>
+                }
+            </div>
+        }
+        else if (User.Identity is not { IsAuthenticated: true })
+        {
+            <div class="alert alert-info mt-4 mb-0">
+                @Loc.T("job.loginToApply")
+                <a asp-controller="Account" asp-action="Login">@Loc.T("nav.login")</a>
+            </div>
+        }
+    </div>
+</div>

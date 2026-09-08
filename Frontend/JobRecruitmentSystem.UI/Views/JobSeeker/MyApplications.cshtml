@@ -1,0 +1,37 @@
+@model List<ApplicationViewModel>
+@{
+    ViewData["Title"] = Loc.T("jobseeker.myApplicationsTitle");
+}
+
+<h1 class="h3 mb-4">@Loc.T("jobseeker.myApplicationsTitle")</h1>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">@Loc.T("jobseeker.noApplications")</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>@Loc.T("common.status")</th>
+                    <th>@Loc.T("jobseeker.appliedAt")</th>
+                    <th>@Loc.T("employer.employerNote")</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var app in Model)
+                {
+                    <tr>
+                        <td><a asp-controller="JobPost" asp-action="Details" asp-route-id="@app.JobPostId">@app.JobPostTitle</a></td>
+                        <td><span class="badge bg-secondary">@Loc.T("status." + app.Status.ToLower())</span></td>
+                        <td>@app.AppliedAt.ToString("dd.MM.yyyy")</td>
+                        <td>@app.EmployerNote</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

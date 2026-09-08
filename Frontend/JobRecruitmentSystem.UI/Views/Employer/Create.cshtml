@@ -1,0 +1,14 @@
+@model JobPostFormViewModel
+@{
+    ViewData["Title"] = Loc.T("employer.createTitle");
+}
+
+<h1 class="h3 mb-4">@Loc.T("employer.createTitle")</h1>
+
+<form asp-controller="Employer" asp-action="Create" method="post">
+    <partial name="_JobPostForm" />
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
