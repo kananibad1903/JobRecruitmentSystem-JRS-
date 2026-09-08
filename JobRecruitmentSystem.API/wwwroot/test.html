@@ -2,324 +2,609 @@
 <html lang="az">
 <head>
     <meta charset="UTF-8">
-    <title>JRS Test Panel</title>
+    <title>JRS — Test Paneli</title>
     <style>
         * {
             box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            font-family: Segoe UI, Arial, sans-serif;
-            background: #f4f5f7;
-            margin: 0;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-
-        h1 {
-            text-align: center;
-            color: #222;
-        }
-
-        .tabs {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f0f2f8;
+            color: #1a1a2e;
             display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
+            min-height: 100vh;
         }
 
-        .tab-btn {
-            padding: 10px 16px;
-            border: none;
-            background: #ddd;
+        .sidebar {
+            width: 240px;
+            background: linear-gradient(180deg, #1e2a4a 0%, #16213e 100%);
+            color: white;
+            padding: 24px 0;
+            flex-shrink: 0;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+            .sidebar .logo {
+                font-size: 18px;
+                font-weight: 700;
+                padding: 0 20px 20px;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+                margin-bottom: 12px;
+            }
+
+                .sidebar .logo span {
+                    color: #6ea8fe;
+                }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
             cursor: pointer;
-            border-radius: 6px;
-            font-weight: 600;
+            font-size: 14px;
+            color: rgba(255,255,255,0.75);
+            transition: all 0.15s;
+            border-left: 3px solid transparent;
         }
 
-            .tab-btn.active {
-                background: #2d6cdf;
+            .nav-item:hover {
+                background: rgba(255,255,255,0.06);
                 color: white;
             }
 
-        .panel {
-            display: none;
+            .nav-item.active {
+                background: rgba(110,168,254,0.15);
+                color: #6ea8fe;
+                border-left-color: #6ea8fe;
+                font-weight: 600;
+            }
+
+        .nav-icon {
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .main {
+            flex: 1;
+            padding: 28px 36px;
+            max-width: 1100px;
+        }
+
+        .status-bar {
             background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-
-            .panel.active {
-                display: block;
-            }
-
-            .panel h2 {
-                margin-top: 0;
-                font-size: 18px;
-                color: #333;
-                border-bottom: 2px solid #eee;
-                padding-bottom: 8px;
-            }
-
-        label {
-            display: block;
+            border-radius: 12px;
+            padding: 14px 20px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             font-size: 13px;
-            color: #555;
-            margin: 10px 0 3px;
         }
 
-        input, select, textarea {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-
-        textarea {
-            min-height: 60px;
-        }
-
-        button.action {
-            margin-top: 14px;
-            padding: 10px 18px;
-            background: #2d6cdf;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-            button.action:hover {
-                background: #1e56c0;
+            .status-bar .role-badge {
+                background: #6ea8fe;
+                color: white;
+                padding: 4px 12px;
+                border-radius: 20px;
+                font-weight: 600;
+                font-size: 12px;
             }
 
-        .row {
+                .status-bar .role-badge.none {
+                    background: #ccc;
+                }
+
+        .page {
+            display: none;
+        }
+
+            .page.active {
+                display: block;
+                animation: fadeIn 0.25s ease;
+            }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 14px;
+            padding: 22px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+            .card h2 {
+                font-size: 16px;
+                color: #16213e;
+                margin-bottom: 16px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+                .card h2::before {
+                    content: '';
+                    width: 4px;
+                    height: 16px;
+                    background: #6ea8fe;
+                    border-radius: 2px;
+                }
+
+        .grid2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
         }
 
-        #tokenBar {
-            background: #222;
-            color: #0f0;
-            padding: 8px 12px;
-            border-radius: 6px;
+        label {
+            display: block;
             font-size: 12px;
-            margin-bottom: 16px;
-            word-break: break-all;
+            color: #666;
+            margin: 10px 0 4px;
+            font-weight: 600;
         }
 
-        #output {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 14px;
+        input, select, textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1.5px solid #e2e5ee;
             border-radius: 8px;
-            white-space: pre-wrap;
-            word-break: break-all;
-            max-height: 400px;
-            overflow-y: auto;
-            font-size: 13px;
+            font-size: 14px;
+            transition: border 0.15s;
+            font-family: inherit;
         }
+
+            input:focus, select:focus, textarea:focus {
+                outline: none;
+                border-color: #6ea8fe;
+            }
+
+        textarea {
+            min-height: 70px;
+            resize: vertical;
+        }
+
+        button {
+            margin-top: 14px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.15s;
+            margin-right: 8px;
+        }
+
+        .btn-primary {
+            background: #2d6cdf;
+            color: white;
+        }
+
+            .btn-primary:hover {
+                background: #1e56c0;
+                transform: translateY(-1px);
+            }
+
+        .btn-success {
+            background: #2a9d3f;
+            color: white;
+        }
+
+            .btn-success:hover {
+                background: #1f7a30;
+            }
+
+        .btn-danger {
+            background: #e5484d;
+            color: white;
+        }
+
+            .btn-danger:hover {
+                background: #c53a3e;
+            }
+
+        .btn-ghost {
+            background: #eef1f8;
+            color: #1a1a2e;
+        }
+
+            .btn-ghost:hover {
+                background: #dde2ee;
+            }
 
         .status {
             display: inline-block;
-            margin-left: 8px;
+            margin-left: 10px;
             font-size: 12px;
+            font-weight: 600;
         }
 
             .status.ok {
-                color: green;
+                color: #2a9d3f;
             }
 
             .status.err {
-                color: red;
+                color: #e5484d;
             }
+
+        .result-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            gap: 12px;
+            margin-top: 14px;
+        }
+
+        .result-card {
+            background: #f7f9fd;
+            border: 1px solid #e2e5ee;
+            border-radius: 10px;
+            padding: 14px;
+            font-size: 13px;
+        }
+
+            .result-card b {
+                display: block;
+                font-size: 14px;
+                margin-bottom: 4px;
+                color: #16213e;
+            }
+
+            .result-card .badge {
+                display: inline-block;
+                padding: 2px 8px;
+                border-radius: 12px;
+                font-size: 11px;
+                font-weight: 700;
+                margin-top: 6px;
+            }
+
+        .badge.approved {
+            background: #d7f4dc;
+            color: #1f7a30;
+        }
+
+        .badge.pending {
+            background: #fde9c8;
+            color: #b5720a;
+        }
+
+        #output {
+            background: #14151f;
+            color: #9dd;
+            padding: 16px;
+            border-radius: 10px;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 320px;
+            overflow-y: auto;
+            font-size: 12px;
+            font-family: 'Consolas', monospace;
+        }
+
+        .chat-box {
+            border: 1.5px solid #e2e5ee;
+            border-radius: 10px;
+            padding: 14px;
+            height: 320px;
+            overflow-y: auto;
+            margin-bottom: 12px;
+            background: #f7f9fd;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .chat-msg {
+            padding: 10px 14px;
+            border-radius: 12px;
+            max-width: 75%;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .chat-user {
+            background: #2d6cdf;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+
+        .chat-ai {
+            background: white;
+            color: #1a1a2e;
+            align-self: flex-start;
+            border: 1px solid #e2e5ee;
+            border-bottom-left-radius: 2px;
+        }
+
+        .chat-input-row {
+            display: flex;
+            gap: 8px;
+        }
+
+            .chat-input-row input {
+                flex: 1;
+            }
+
+            .chat-input-row button {
+                margin-top: 0;
+            }
+
+        .hint {
+            font-size: 11px;
+            color: #999;
+            margin-top: 6px;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Job Recruitment System — Test Panel</h1>
-        <div id="tokenBar">Token: yoxdur</div>
 
-        <div class="tabs">
-            <button class="tab-btn active" onclick="showTab('auth')">1. Auth</button>
-            <button class="tab-btn" onclick="showTab('employer')">2. Employer Profil</button>
-            <button class="tab-btn" onclick="showTab('jobseeker')">3. JobSeeker Profil</button>
-            <button class="tab-btn" onclick="showTab('jobpost')">4. Job Post</button>
-            <button class="tab-btn" onclick="showTab('application')">5. Application</button>
-            <button class="tab-btn" onclick="showTab('savedjob')">6. Saved Job</button>
+    <div class="sidebar">
+        <div class="logo">JRS <span>Test Panel</span></div>
+        <div class="nav-item active" data-page="auth" onclick="showPage('auth', this)"><span class="nav-icon">🔐</span> Auth</div>
+        <div class="nav-item" data-page="employer" onclick="showPage('employer', this)"><span class="nav-icon">🏢</span> Employer</div>
+        <div class="nav-item" data-page="jobseeker" onclick="showPage('jobseeker', this)"><span class="nav-icon">👤</span> JobSeeker</div>
+        <div class="nav-item" data-page="jobpost" onclick="showPage('jobpost', this)"><span class="nav-icon">📋</span> Job Post</div>
+        <div class="nav-item" data-page="application" onclick="showPage('application', this)"><span class="nav-icon">✉️</span> Application</div>
+        <div class="nav-item" data-page="savedjob" onclick="showPage('savedjob', this)"><span class="nav-icon">⭐</span> Saved Job</div>
+        <div class="nav-item" data-page="admin" onclick="showPage('admin', this)"><span class="nav-icon">🛡️</span> Admin</div>
+        <div class="nav-item" data-page="aichat" onclick="showPage('aichat', this)"><span class="nav-icon">🤖</span> AI Chat</div>
+    </div>
+
+    <div class="main">
+        <div class="status-bar">
+            <div>Token: <span id="tokenPreview" style="color:#999;">yoxdur</span></div>
+            <div class="role-badge none" id="roleBadge">giriş edilməyib</div>
         </div>
 
-        <!-- AUTH -->
-        <div class="panel active" id="tab-auth">
-            <h2>Register</h2>
-            <div class="row">
-                <div><label>Full Name</label><input id="regFullName"></div>
-                <div><label>Email</label><input id="regEmail"></div>
-                <div><label>Password</label><input id="regPassword" type="password"></div>
-                <div>
-                    <label>Role</label>
-                    <select id="regRole">
-                        <option value="JobSeeker">JobSeeker</option>
-                        <option value="Employer">Employer</option>
-                    </select>
+        <div class="page active" id="page-auth">
+            <div class="card">
+                <h2>Register</h2>
+                <div class="grid2">
+                    <div><label>Full Name</label><input id="regFullName"></div>
+                    <div><label>Email</label><input id="regEmail"></div>
+                    <div><label>Password</label><input id="regPassword" type="password"></div>
+                    <div>
+                        <label>Role</label>
+                        <select id="regRole">
+                            <option value="JobSeeker">JobSeeker</option>
+                            <option value="Employer">Employer</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn-primary" onclick="register()">Register</button>
+                <span id="regStatus" class="status"></span>
+            </div>
+
+            <div class="card">
+                <h2>Email Təsdiqi</h2>
+                <div class="grid2">
+                    <div><label>Email</label><input id="confirmEmail"></div>
+                    <div><label>Kod</label><input id="confirmCode"></div>
+                </div>
+                <button class="btn-primary" onclick="confirmEmail()">Təsdiqlə</button>
+                <span id="confirmStatus" class="status"></span>
+            </div>
+
+            <div class="card">
+                <h2>Login</h2>
+                <div class="grid2">
+                    <div><label>Email</label><input id="loginEmail"></div>
+                    <div><label>Password</label><input id="loginPassword" type="password"></div>
+                </div>
+                <button class="btn-primary" onclick="login()">Login</button>
+                <span id="loginStatus" class="status"></span>
+            </div>
+
+            <div class="card">
+                <h2>Şifrəni Unutdum</h2>
+                <div class="grid2">
+                    <div><label>Email</label><input id="forgotEmail"></div>
+                </div>
+                <button class="btn-ghost" onclick="forgotPassword()">Kod Göndər</button>
+                <span id="forgotStatus" class="status"></span>
+            </div>
+
+            <div class="card">
+                <h2>Yeni Şifrə Təyin Et</h2>
+                <div class="grid2">
+                    <div><label>Email</label><input id="resetEmail"></div>
+                    <div><label>Kod</label><input id="resetCode"></div>
+                    <div style="grid-column: span 2;"><label>Yeni Şifrə</label><input id="resetNewPassword" type="password"></div>
+                </div>
+                <button class="btn-ghost" onclick="resetPassword()">Şifrəni Dəyiş</button>
+                <span id="resetStatus" class="status"></span>
+            </div>
+        </div>
+
+        <div class="page" id="page-employer">
+            <div class="card">
+                <h2>Employer Profili</h2>
+                <button class="btn-ghost" onclick="getEmployerProfile()">Profili Gətir</button>
+                <div class="grid2" style="margin-top:12px;">
+                    <div><label>Company Name</label><input id="empCompanyName"></div>
+                    <div><label>Website</label><input id="empWebsite"></div>
+                    <div><label>Location</label><input id="empLocation"></div>
+                    <div><label>Description</label><textarea id="empDescription"></textarea></div>
+                </div>
+                <button class="btn-primary" onclick="updateEmployerProfile()">Yenilə</button>
+            </div>
+        </div>
+
+        <div class="page" id="page-jobseeker">
+            <div class="card">
+                <h2>JobSeeker Profili</h2>
+                <button class="btn-ghost" onclick="getJobSeekerProfile()">Profili Gətir</button>
+                <div class="grid2" style="margin-top:12px;">
+                    <div><label>Skills</label><input id="jsSkills"></div>
+                    <div><label>Work Experience</label><textarea id="jsExperience"></textarea></div>
+                </div>
+                <button class="btn-primary" onclick="updateJobSeekerProfile()">Yenilə</button>
+            </div>
+
+            <div class="card">
+                <h2>CV Yüklə</h2>
+                <input type="file" id="cvFile">
+                <button class="btn-primary" onclick="uploadCv()">Yüklə</button>
+            </div>
+        </div>
+
+        <div class="page" id="page-jobpost">
+            <div class="card">
+                <h2>Yeni Elan (Employer)</h2>
+                <div class="grid2">
+                    <div><label>Title</label><input id="jpTitle"></div>
+                    <div><label>Category</label><input id="jpCategory"></div>
+                    <div><label>Location</label><input id="jpLocation"></div>
+                    <div><label>Job Type</label><input id="jpJobType" placeholder="Full-time / Part-time / Remote"></div>
+                    <div><label>Salary Min</label><input id="jpSalaryMin" type="number"></div>
+                    <div><label>Salary Max</label><input id="jpSalaryMax" type="number"></div>
+                    <div><label>Deadline</label><input id="jpDeadline" type="date"></div>
+                    <div></div>
+                    <div style="grid-column: span 2;"><label>Description</label><textarea id="jpDescription"></textarea></div>
+                    <div style="grid-column: span 2;"><label>Requirements</label><textarea id="jpRequirements"></textarea></div>
+                </div>
+                <button class="btn-primary" onclick="createJobPost()">Elan Yarat</button>
+                <div class="hint">Yeni elan admin təsdiqləyənə qədər ictimai siyahıda görünmür.</div>
+            </div>
+
+            <div class="card">
+                <h2>Elanlar</h2>
+                <button class="btn-ghost" onclick="getAllJobs()">Bütün Elanlar (təsdiqlənmiş)</button>
+                <button class="btn-ghost" onclick="getMyJobPosts()">Mənim Elanlarım (Employer)</button>
+                <div class="result-cards" id="jobCards"></div>
+            </div>
+        </div>
+
+        <div class="page" id="page-application">
+            <div class="card">
+                <h2>Elana Müraciət Et (JobSeeker)</h2>
+                <label>Job Post Id</label>
+                <input id="applyJobPostId" type="number">
+                <button class="btn-primary" onclick="apply()">Müraciət Et</button>
+            </div>
+
+            <div class="card">
+                <h2>Mənim Müraciətlərim (JobSeeker)</h2>
+                <button class="btn-ghost" onclick="getMyApplications()">Göstər</button>
+            </div>
+
+            <div class="card">
+                <h2>Elana Gələn Müraciətlər (Employer)</h2>
+                <label>Job Post Id</label>
+                <input id="jobPostIdForApps" type="number">
+                <button class="btn-ghost" onclick="getApplicationsForJobPost()">Göstər</button>
+            </div>
+
+            <div class="card">
+                <h2>Status Dəyiş (Employer)</h2>
+                <div class="grid2">
+                    <div><label>Application Id</label><input id="appIdForStatus" type="number"></div>
+                    <div>
+                        <label>Status</label>
+                        <select id="newStatus">
+                            <option>Applied</option>
+                            <option>Reviewed</option>
+                            <option>Shortlisted</option>
+                            <option>Rejected</option>
+                        </select>
+                    </div>
+                    <div style="grid-column: span 2;"><label>Employer Note</label><input id="employerNote"></div>
+                </div>
+                <button class="btn-primary" onclick="updateStatus()">Statusu Yenilə</button>
+            </div>
+        </div>
+
+        <div class="page" id="page-savedjob">
+            <div class="card">
+                <h2>Elan Saxla (JobSeeker)</h2>
+                <label>Job Post Id</label>
+                <input id="saveJobPostId" type="number">
+                <button class="btn-primary" onclick="saveJob()">Saxla</button>
+            </div>
+
+            <div class="card">
+                <h2>Saxlanılan Elanlarım</h2>
+                <button class="btn-ghost" onclick="getMySavedJobs()">Göstər</button>
+            </div>
+
+            <div class="card">
+                <h2>Saxlanılanı Sil</h2>
+                <label>Job Post Id</label>
+                <input id="removeSavedJobId" type="number">
+                <button class="btn-danger" onclick="removeSavedJob()">Sil</button>
+            </div>
+        </div>
+
+        <div class="page" id="page-admin">
+            <div class="card">
+                <h2>İstifadəçilər</h2>
+                <button class="btn-ghost" onclick="getAllUsers()">Bütün İstifadəçilər</button>
+                <div class="grid2" style="margin-top:12px;">
+                    <div><label>User Id (silmək üçün)</label><input id="deleteUserId" type="number"></div>
+                </div>
+                <button class="btn-danger" onclick="deleteUser()">İstifadəçini Sil</button>
+            </div>
+
+            <div class="card">
+                <h2>Elan Moderasiyası</h2>
+                <button class="btn-ghost" onclick="getAllJobPostsAdmin()">Bütün Elanlar</button>
+                <button class="btn-ghost" onclick="getPendingJobPosts()">Gözləyən Elanlar</button>
+                <div class="grid2" style="margin-top:12px;">
+                    <div><label>Job Post Id</label><input id="jobPostIdAdmin" type="number"></div>
+                </div>
+                <button class="btn-success" onclick="approveJobPost()">Təsdiqlə</button>
+                <button class="btn-danger" onclick="deleteJobPostAdmin()">Sil</button>
+                <div class="result-cards" id="adminJobCards"></div>
+            </div>
+        </div>
+
+        <div class="page" id="page-aichat">
+            <div class="card">
+                <h2>AI Köməkçi</h2>
+                <div class="chat-box" id="chatBox"></div>
+                <div class="chat-input-row">
+                    <input id="chatInput" placeholder="Sualını yaz... (məs: CV-mi necə yaxşılaşdırım?)" onkeydown="if(event.key==='Enter') sendChat()">
+                    <button class="btn-primary" onclick="sendChat()">Göndər</button>
                 </div>
             </div>
-            <button class="action" onclick="register()">Register</button>
-            <span id="regStatus" class="status"></span>
-
-            <h2 style="margin-top:24px;">Email Təsdiqi</h2>
-            <div class="row">
-                <div><label>Email</label><input id="confirmEmail"></div>
-                <div><label>Kod</label><input id="confirmCode"></div>
-            </div>
-            <button class="action" onclick="confirmEmail()">Təsdiqlə</button>
-            <span id="confirmStatus" class="status"></span>
-
-            <h2 style="margin-top:24px;">Login</h2>
-            <div class="row">
-                <div><label>Email</label><input id="loginEmail"></div>
-                <div><label>Password</label><input id="loginPassword" type="password"></div>
-            </div>
-            <button class="action" onclick="login()">Login</button>
-            <span id="loginStatus" class="status"></span>
-
-            <h2 style="margin-top:24px;">Şifrəni Unutdum</h2>
-            <div class="row">
-                <div><label>Email</label><input id="forgotEmail"></div>
-            </div>
-            <button class="action" onclick="forgotPassword()">Kod Göndər</button>
-            <span id="forgotStatus" class="status"></span>
-
-            <h2 style="margin-top:24px;">Yeni Şifrə Təyin Et</h2>
-            <div class="row">
-                <div><label>Email</label><input id="resetEmail"></div>
-                <div><label>Kod</label><input id="resetCode"></div>
-                <div style="grid-column: span 2;"><label>Yeni Şifrə</label><input id="resetNewPassword" type="password"></div>
-            </div>
-            <button class="action" onclick="resetPassword()">Şifrəni Dəyiş</button>
-            <span id="resetStatus" class="status"></span>
         </div>
 
-        <!-- EMPLOYER -->
-        <div class="panel" id="tab-employer">
-            <h2>Employer Profili</h2>
-            <button class="action" onclick="getEmployerProfile()">Profili Gətir</button>
-            <div class="row" style="margin-top:14px;">
-                <div><label>Company Name</label><input id="empCompanyName"></div>
-                <div><label>Website</label><input id="empWebsite"></div>
-                <div><label>Location</label><input id="empLocation"></div>
-                <div><label>Description</label><textarea id="empDescription"></textarea></div>
-            </div>
-            <button class="action" onclick="updateEmployerProfile()">Yenilə</button>
+        <div class="card">
+            <h2>Xam Nəticə (JSON)</h2>
+            <div id="output">-</div>
         </div>
-
-        <!-- JOBSEEKER -->
-        <div class="panel" id="tab-jobseeker">
-            <h2>JobSeeker Profili</h2>
-            <button class="action" onclick="getJobSeekerProfile()">Profili Gətir</button>
-            <div class="row" style="margin-top:14px;">
-                <div><label>Skills</label><input id="jsSkills"></div>
-                <div><label>Work Experience</label><textarea id="jsExperience"></textarea></div>
-            </div>
-            <button class="action" onclick="updateJobSeekerProfile()">Yenilə</button>
-
-            <h2 style="margin-top:24px;">CV Yüklə</h2>
-            <input type="file" id="cvFile">
-            <button class="action" onclick="uploadCv()">Yüklə</button>
-        </div>
-
-        <!-- JOBPOST -->
-        <div class="panel" id="tab-jobpost">
-            <h2>Yeni Elan (Employer)</h2>
-            <div class="row">
-                <div><label>Title</label><input id="jpTitle"></div>
-                <div><label>Category</label><input id="jpCategory"></div>
-                <div><label>Location</label><input id="jpLocation"></div>
-                <div><label>Job Type</label><input id="jpJobType" placeholder="Full-time / Part-time / Remote"></div>
-                <div><label>Salary Min</label><input id="jpSalaryMin" type="number"></div>
-                <div><label>Salary Max</label><input id="jpSalaryMax" type="number"></div>
-                <div><label>Deadline</label><input id="jpDeadline" type="date"></div>
-                <div></div>
-                <div style="grid-column: span 2;"><label>Description</label><textarea id="jpDescription"></textarea></div>
-                <div style="grid-column: span 2;"><label>Requirements</label><textarea id="jpRequirements"></textarea></div>
-            </div>
-            <button class="action" onclick="createJobPost()">Elan Yarat</button>
-
-            <h2 style="margin-top:24px;">Elanlar</h2>
-            <button class="action" onclick="getAllJobs()">Bütün Elanlar</button>
-            <button class="action" onclick="getMyJobPosts()">Mənim Elanlarım (Employer)</button>
-        </div>
-
-        <!-- APPLICATION -->
-        <div class="panel" id="tab-application">
-            <h2>Elana Müraciət Et (JobSeeker)</h2>
-            <label>Job Post Id</label>
-            <input id="applyJobPostId" type="number">
-            <button class="action" onclick="apply()">Müraciət Et</button>
-
-            <h2 style="margin-top:24px;">Mənim Müraciətlərim (JobSeeker)</h2>
-            <button class="action" onclick="getMyApplications()">Göstər</button>
-
-            <h2 style="margin-top:24px;">Elana Gələn Müraciətlər (Employer)</h2>
-            <label>Job Post Id</label>
-            <input id="jobPostIdForApps" type="number">
-            <button class="action" onclick="getApplicationsForJobPost()">Göstər</button>
-
-            <h2 style="margin-top:24px;">Status Dəyiş (Employer)</h2>
-            <div class="row">
-                <div><label>Application Id</label><input id="appIdForStatus" type="number"></div>
-                <div>
-                    <label>Status</label>
-                    <select id="newStatus">
-                        <option>Applied</option>
-                        <option>Reviewed</option>
-                        <option>Shortlisted</option>
-                        <option>Rejected</option>
-                    </select>
-                </div>
-                <div style="grid-column: span 2;"><label>Employer Note</label><input id="employerNote"></div>
-            </div>
-            <button class="action" onclick="updateStatus()">Statusu Yenilə</button>
-        </div>
-
-        <!-- SAVEDJOB -->
-        <div class="panel" id="tab-savedjob">
-            <h2>Elan Saxla (JobSeeker)</h2>
-            <label>Job Post Id</label>
-            <input id="saveJobPostId" type="number">
-            <button class="action" onclick="saveJob()">Saxla</button>
-
-            <h2 style="margin-top:24px;">Saxlanılan Elanlarım</h2>
-            <button class="action" onclick="getMySavedJobs()">Göstər</button>
-
-            <h2 style="margin-top:24px;">Saxlanılanı Sil</h2>
-            <label>Job Post Id</label>
-            <input id="removeSavedJobId" type="number">
-            <button class="action" onclick="removeSavedJob()">Sil</button>
-        </div>
-
-        <h3>Nəticə:</h3>
-        <div id="output">-</div>
     </div>
 
     <script>
 const BASE = window.location.origin + "/api";
 let token = "";
 
-function showTab(name) {
-          document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
-          document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-          document.getElementById("tab-" + name).classList.add("active");
-          event.target.classList.add("active");
+function showPage(name, el) {
+          document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+          document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
+          document.getElementById("page-" + name).classList.add("active");
+          el.classList.add("active");
 }
 
 function val(id) {
@@ -344,6 +629,29 @@ function authHeaders(json = true) {
           return headers;
 }
 
+function decodeRole(jwt) {
+          try {
+            const payload = JSON.parse(atob(jwt.split(".")[1]));
+            return payload["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || payload["role"] || "?";
+          } catch (e) {
+            return "?";
+          }
+}
+
+function renderJobCards(containerId, jobs) {
+          const container = document.getElementById(containerId);
+          if (!container) return;
+          if (!Array.isArray(jobs)) { container.innerHTML = ""; return; }
+          container.innerHTML = jobs.map(j => `
+            <div class="result-card">
+              <b>#${j.id} — ${j.title || ""}</b>
+              ${j.companyName || ""} · ${j.location || ""}<br>
+              ${j.jobType || ""} · ${j.salaryMin ?? ""}–${j.salaryMax ?? ""}
+              <div class="badge ${j.isApproved ? 'approved' : 'pending'}">${j.isApproved ? 'Təsdiqlənib' : 'Gözləyir'}</div>
+            </div>
+          `).join("");
+}
+
 async function register() {
           const body = {
             fullName: val("regFullName"),
@@ -358,10 +666,8 @@ async function register() {
           });
           const data = await res.json();
           show(data);
-          setStatus("regStatus", res.ok, res.ok ? "✓ Qeydiyyat oldu, email-ə gələn kodu daxil et" : "✗ Xəta");
-          if (res.ok) {
-            document.getElementById("confirmEmail").value = body.email;
-          }
+          setStatus("regStatus", res.ok, res.ok ? "✓ Qeydiyyat oldu, kodu daxil et" : "✗ Xəta");
+          if (res.ok) document.getElementById("confirmEmail").value = body.email;
 }
 
 async function confirmEmail() {
@@ -387,7 +693,11 @@ async function login() {
           show(data);
           if (data.token) {
             token = data.token;
-            document.getElementById("tokenBar").textContent = "Token: " + token.substring(0, 50) + "...";
+            const role = decodeRole(token);
+            document.getElementById("tokenPreview").textContent = token.substring(0, 34) + "...";
+            const badge = document.getElementById("roleBadge");
+            badge.textContent = role;
+            badge.classList.remove("none");
             setStatus("loginStatus", true, "✓ Giriş edildi");
           } else {
             setStatus("loginStatus", false, "✗ " + (data.message || "Xəta"));
@@ -505,12 +815,16 @@ async function createJobPost() {
 
 async function getAllJobs() {
           const res = await fetch(`${BASE}/JobPost`);
-          show(await res.json());
+          const data = await res.json();
+          show(data);
+          renderJobCards("jobCards", data);
 }
 
 async function getMyJobPosts() {
           const res = await fetch(`${BASE}/JobPost/my-posts`, { headers: authHeaders() });
-          show(await res.json());
+          const data = await res.json();
+          show(data);
+          renderJobCards("jobCards", data);
 }
 
 async function apply() {
@@ -566,6 +880,79 @@ async function removeSavedJob() {
             headers: authHeaders()
           });
           show(await res.json());
+}
+
+async function getAllUsers() {
+          const res = await fetch(`${BASE}/Admin/users`, { headers: authHeaders() });
+          show(await res.json());
+}
+
+async function deleteUser() {
+          const id = val("deleteUserId");
+          const res = await fetch(`${BASE}/Admin/users/${id}`, {
+            method: "DELETE",
+            headers: authHeaders()
+          });
+          show(await res.json());
+}
+
+async function getAllJobPostsAdmin() {
+          const res = await fetch(`${BASE}/Admin/jobposts`, { headers: authHeaders() });
+          const data = await res.json();
+          show(data);
+          renderJobCards("adminJobCards", data);
+}
+
+async function getPendingJobPosts() {
+          const res = await fetch(`${BASE}/Admin/jobposts/pending`, { headers: authHeaders() });
+          const data = await res.json();
+          show(data);
+          renderJobCards("adminJobCards", data);
+}
+
+async function approveJobPost() {
+          const id = val("jobPostIdAdmin");
+          const res = await fetch(`${BASE}/Admin/jobposts/${id}/approve`, {
+            method: "PUT",
+            headers: authHeaders()
+          });
+          show(await res.json());
+}
+
+async function deleteJobPostAdmin() {
+          const id = val("jobPostIdAdmin");
+          const res = await fetch(`${BASE}/Admin/jobposts/${id}`, {
+            method: "DELETE",
+            headers: authHeaders()
+          });
+          show(await res.json());
+}
+
+async function sendChat() {
+          const message = val("chatInput");
+          if (!message) return;
+
+          const chatBox = document.getElementById("chatBox");
+          const userMsg = document.createElement("div");
+          userMsg.className = "chat-msg chat-user";
+          userMsg.textContent = message;
+          chatBox.appendChild(userMsg);
+          document.getElementById("chatInput").value = "";
+          chatBox.scrollTop = chatBox.scrollHeight;
+
+          const res = await fetch(`${BASE}/AiChat`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message })
+          });
+          const data = await res.json();
+          show(data);
+
+          const aiMsg = document.createElement("div");
+          aiMsg.className = "chat-msg chat-ai";
+          aiMsg.textContent = data.reply || (data.message || "Xəta baş verdi");
+          chatBox.appendChild(aiMsg);
+          chatBox.scrollTop = chatBox.scrollHeight;
 }
     </script>
 </body>
