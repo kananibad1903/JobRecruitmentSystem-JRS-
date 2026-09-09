@@ -9,5 +9,6 @@ namespace JobRecruitmentSystem.BLL.Services.Interfaces
     {
         Task<EmployerProfileDto> GetByUserIdAsync(int userId);
         Task<EmployerProfileDto> UpdateProfileAsync(int userId, UpdateEmployerProfileDto dto);
+        Task<CandidateProfileDto> GetCandidateProfileAsync(int employerUserId, int jobSeekerId);
     }
 }

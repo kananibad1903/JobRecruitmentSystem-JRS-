@@ -14,7 +14,6 @@ namespace JobRecruitmentSystem.UI.Models.Employer
 
         public string CompanyLocation { get; set; } = string.Empty;
 
-        [Url]
-        public string Website { get; set; } = string.Empty;
+        public string? Website { get; set; }
     }
 }

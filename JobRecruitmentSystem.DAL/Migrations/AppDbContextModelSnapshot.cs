@@ -120,6 +120,9 @@ namespace JobRecruitmentSystem.DAL.Migrations
                     b.Property<bool>("IsApproved")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsExpired")
+                        .HasColumnType("bit");
+
                     b.Property<string>("JobType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -180,6 +183,38 @@ namespace JobRecruitmentSystem.DAL.Migrations
                         .IsUnique();
 
                     b.ToTable("JobSeekers");
+                });
+
+            modelBuilder.Entity("JobRecruitmentSystem.DAL.Entities.Notification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Link")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("JobRecruitmentSystem.DAL.Entities.SavedJob", b =>
@@ -301,6 +336,17 @@ namespace JobRecruitmentSystem.DAL.Migrations
                     b.HasOne("JobRecruitmentSystem.DAL.Entities.User", "User")
                         .WithOne("JobSeeker")
                         .HasForeignKey("JobRecruitmentSystem.DAL.Entities.JobSeeker", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("JobRecruitmentSystem.DAL.Entities.Notification", b =>
+                {
+                    b.HasOne("JobRecruitmentSystem.DAL.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

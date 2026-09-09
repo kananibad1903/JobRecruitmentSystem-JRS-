@@ -1,0 +1,12 @@
+@{
+    var quoteKeys = new[] { "quotes.1", "quotes.2", "quotes.3", "quotes.4", "quotes.5", "quotes.6", "quotes.7", "quotes.8" };
+}
+<div class="career-quote-card">
+    <i class="bi bi-quote career-quote-icon"></i>
+    <div class="career-quote-stack">
+        @for (var i = 0; i < quoteKeys.Length; i++)
+        {
+            <blockquote class="career-quote @(i == 0 ? "active" : "")">@Loc.T(quoteKeys[i])</blockquote>
+        }
+    </div>
+</div>

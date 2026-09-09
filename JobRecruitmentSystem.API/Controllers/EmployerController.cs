@@ -49,5 +49,21 @@ namespace JobRecruitmentSystem.API.Controllers
                 return NotFound(new { message = ex.Message });
             }
         }
+
+        [HttpGet("candidates/{jobSeekerId}")]
+        public async Task<IActionResult> GetCandidateProfile(int jobSeekerId)
+        {
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            try
+            {
+                var profile = await _employerService.GetCandidateProfileAsync(userId, jobSeekerId);
+                return Ok(profile);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
     }
 }

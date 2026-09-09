@@ -2,6 +2,7 @@
     var toggleBtn = document.getElementById('chat-toggle-btn');
     var closeBtn = document.getElementById('chat-close-btn');
     var chatBox = document.getElementById('chat-box');
+    var hintBubble = document.getElementById('chat-hint-bubble');
     var form = document.getElementById('chat-form');
     var input = document.getElementById('chat-input');
     var messages = document.getElementById('chat-messages');
@@ -10,21 +11,63 @@
         return;
     }
 
+    var idleWiggleTimer = null;
+
     function greetWiggle() {
-        toggleBtn.classList.remove('chat-toggle-idle');
         toggleBtn.classList.add('chat-toggle-greet');
         setTimeout(function () {
             toggleBtn.classList.remove('chat-toggle-greet');
-            toggleBtn.classList.add('chat-toggle-idle');
         }, 600);
     }
 
+    function stopIdleWiggle() {
+        if (idleWiggleTimer) {
+            clearInterval(idleWiggleTimer);
+            idleWiggleTimer = null;
+        }
+    }
+
+    function startIdleWiggle() {
+        // A gentle nudge every ~9s until the user opens the chat for the first time.
+        idleWiggleTimer = setInterval(function () {
+            if (!chatBox.classList.contains('chat-box-visible')) {
+                greetWiggle();
+            }
+        }, 9000);
+    }
+
+    function showHintBubbleOnce() {
+        if (!hintBubble) {
+            return;
+        }
+        try {
+            if (sessionStorage.getItem('qarisqaChatHintShown')) {
+                return;
+            }
+        } catch (e) {
+            // sessionStorage unavailable — show the hint anyway, just not "once per tab".
+        }
+
+        setTimeout(function () {
+            hintBubble.classList.add('visible');
+            try {
+                sessionStorage.setItem('qarisqaChatHintShown', '1');
+            } catch (e) { /* ignore */ }
+
+            setTimeout(function () {
+                hintBubble.classList.remove('visible');
+            }, 4000);
+        }, 1500);
+    }
+
     function openChat() {
+        hintBubble?.classList.remove('visible');
         chatBox.classList.remove('d-none');
         // force reflow so the opacity/transform transition actually plays
         void chatBox.offsetWidth;
         chatBox.classList.add('chat-box-visible');
         greetWiggle();
+        stopIdleWiggle();
         input.focus();
     }
 
@@ -81,4 +124,7 @@
                 input.focus();
             });
     });
+
+    showHintBubbleOnce();
+    startIdleWiggle();
 })();

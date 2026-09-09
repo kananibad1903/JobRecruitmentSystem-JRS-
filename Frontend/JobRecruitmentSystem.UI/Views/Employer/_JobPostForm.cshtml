@@ -1,4 +1,9 @@
 @model JobPostFormViewModel
+@{
+    var categories = JobRecruitmentSystem.UI.Constants.JobPostOptions.Categories;
+    var jobTypes = JobRecruitmentSystem.UI.Constants.JobPostOptions.JobTypes;
+    var districts = JobRecruitmentSystem.UI.Constants.JobPostOptions.Districts;
+}
 
 <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
 <input type="hidden" asp-for="Id" />
@@ -24,17 +29,35 @@
 <div class="row">
     <div class="col-md-4 mb-3">
         <label class="form-label">@Loc.T("job.category")</label>
-        <input asp-for="Category" class="form-control" />
+        <select asp-for="Category" class="form-select">
+            <option value="">@Loc.T("common.chooseOption")</option>
+            @foreach (var category in categories)
+            {
+                <option value="@category">@Loc.T(JobRecruitmentSystem.UI.Constants.JobPostOptions.CategoryKeys[category])</option>
+            }
+        </select>
         <span asp-validation-for="Category" class="text-danger small"></span>
     </div>
     <div class="col-md-4 mb-3">
         <label class="form-label">@Loc.T("job.location")</label>
-        <input asp-for="Location" class="form-control" />
+        <select asp-for="Location" class="form-select">
+            <option value="">@Loc.T("common.chooseOption")</option>
+            @foreach (var district in districts)
+            {
+                <option value="@district">@Loc.T(JobRecruitmentSystem.UI.Constants.JobPostOptions.DistrictKeys[district])</option>
+            }
+        </select>
         <span asp-validation-for="Location" class="text-danger small"></span>
     </div>
     <div class="col-md-4 mb-3">
         <label class="form-label">@Loc.T("job.jobType")</label>
-        <input asp-for="JobType" class="form-control" />
+        <select asp-for="JobType" class="form-select">
+            <option value="">@Loc.T("common.chooseOption")</option>
+            @foreach (var jobType in jobTypes)
+            {
+                <option value="@jobType">@Loc.T(JobRecruitmentSystem.UI.Constants.JobPostOptions.JobTypeKeys[jobType])</option>
+            }
+        </select>
         <span asp-validation-for="JobType" class="text-danger small"></span>
     </div>
 </div>

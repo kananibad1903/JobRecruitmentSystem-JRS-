@@ -40,9 +40,9 @@ namespace JobRecruitmentSystem.API.Controllers
 
         [HttpGet("search")]
         public async Task<IActionResult> Search(
-            [FromQuery] string category,
-            [FromQuery] string location,
-            [FromQuery] string jobType,
+            [FromQuery] string? category,
+            [FromQuery] string? location,
+            [FromQuery] string? jobType,
             [FromQuery] decimal? minSalary,
             [FromQuery] decimal? maxSalary)
         {

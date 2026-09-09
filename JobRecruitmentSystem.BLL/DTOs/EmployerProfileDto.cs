@@ -10,6 +10,6 @@ namespace JobRecruitmentSystem.BLL.DTOs
         public string CompanyName { get; set; }
         public string CompanyDescription { get; set; }
         public string CompanyLocation { get; set; }
-        public string Website { get; set; }
+        public string? Website { get; set; }
     }
 }

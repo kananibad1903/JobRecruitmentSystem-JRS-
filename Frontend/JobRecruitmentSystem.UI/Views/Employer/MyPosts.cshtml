@@ -3,10 +3,49 @@
     ViewData["Title"] = Loc.T("employer.myPostsTitle");
 }
 
+@{
+    var totalCount = Model.Count;
+    var approvedCount = Model.Count(j => j.IsApproved);
+    var pendingCount = totalCount - approvedCount;
+}
+
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h3 mb-0"><i class="bi bi-card-list text-primary me-2"></i>@Loc.T("employer.myPostsTitle")</h1>
     <a asp-controller="Employer" asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle me-1"></i>@Loc.T("nav.newPost")</a>
 </div>
+
+@if (Model.Any())
+{
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="stat-card">
+                <i class="bi bi-briefcase-fill"></i>
+                <div>
+                    <div class="stat-card-value">@totalCount</div>
+                    <div class="stat-card-label">@Loc.T("employer.statsTotal")</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card stat-card-approved">
+                <i class="bi bi-check-circle-fill"></i>
+                <div>
+                    <div class="stat-card-value">@approvedCount</div>
+                    <div class="stat-card-label">@Loc.T("employer.statsApproved")</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card stat-card-pending">
+                <i class="bi bi-hourglass-split"></i>
+                <div>
+                    <div class="stat-card-value">@pendingCount</div>
+                    <div class="stat-card-label">@Loc.T("employer.statsPending")</div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 @if (!Model.Any())
 {
@@ -30,7 +69,11 @@ else
                     <tr>
                         <td>@job.Title</td>
                         <td>
-                            @if (job.IsApproved)
+                            @if (job.IsExpired)
+                            {
+                                <span class="badge bg-secondary">@Loc.T("employer.expired")</span>
+                            }
+                            else if (job.IsApproved)
                             {
                                 <span class="badge badge-approved">@Loc.T("employer.approved")</span>
                             }

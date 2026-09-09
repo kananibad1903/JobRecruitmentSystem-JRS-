@@ -12,8 +12,19 @@
 }
 else
 {
+    <div class="d-flex flex-wrap gap-3 align-items-center mb-3">
+        <div class="btn-group" role="group" id="admin-role-filter">
+            <button type="button" class="btn btn-outline-primary active" data-role-filter="all">@Loc.T("admin.filterAll")</button>
+            <button type="button" class="btn btn-outline-primary" data-role-filter="Employer">@Loc.T("admin.filterEmployers")</button>
+            <button type="button" class="btn btn-outline-primary" data-role-filter="JobSeeker">@Loc.T("admin.filterJobSeekers")</button>
+        </div>
+        <div class="flex-grow-1" style="min-width:220px; max-width:320px;">
+            <input type="text" id="admin-user-search" class="form-control" placeholder="@Loc.T("admin.searchPlaceholder")" />
+        </div>
+    </div>
+
     <div class="table-responsive">
-        <table class="table align-middle bg-white">
+        <table class="table align-middle bg-white" id="admin-users-table">
             <thead>
                 <tr>
                     <th>@Loc.T("auth.fullName")</th>
@@ -27,7 +38,7 @@ else
             <tbody>
                 @foreach (var user in Model)
                 {
-                    <tr>
+                    <tr data-role="@user.Role" data-search="@($"{user.FullName} {user.Email}".ToLowerInvariant())">
                         <td>@user.FullName</td>
                         <td>@user.Email</td>
                         <td><span class="badge bg-secondary">@user.Role</span></td>
@@ -45,5 +56,44 @@ else
                 }
             </tbody>
         </table>
+        <p id="admin-users-empty" class="text-muted d-none">@Loc.T("admin.noUsers")</p>
     </div>
+}
+
+@section Scripts {
+    <script>
+        (function () {
+            var roleButtons = document.querySelectorAll('#admin-role-filter [data-role-filter]');
+            var searchInput = document.getElementById('admin-user-search');
+            var rows = document.querySelectorAll('#admin-users-table tbody tr');
+            var emptyMessage = document.getElementById('admin-users-empty');
+            var activeRole = 'all';
+
+            function applyFilter() {
+                var term = (searchInput.value || '').trim().toLowerCase();
+                var visibleCount = 0;
+
+                rows.forEach(function (row) {
+                    var matchesRole = activeRole === 'all' || row.getAttribute('data-role') === activeRole;
+                    var matchesSearch = !term || row.getAttribute('data-search').indexOf(term) !== -1;
+                    var visible = matchesRole && matchesSearch;
+                    row.classList.toggle('d-none', !visible);
+                    if (visible) { visibleCount++; }
+                });
+
+                emptyMessage.classList.toggle('d-none', visibleCount !== 0);
+            }
+
+            roleButtons.forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    roleButtons.forEach(function (b) { b.classList.remove('active'); });
+                    btn.classList.add('active');
+                    activeRole = btn.getAttribute('data-role-filter');
+                    applyFilter();
+                });
+            });
+
+            searchInput.addEventListener('input', applyFilter);
+        })();
+    </script>
 }

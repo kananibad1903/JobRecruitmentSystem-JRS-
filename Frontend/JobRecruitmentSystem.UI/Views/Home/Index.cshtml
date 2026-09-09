@@ -1,83 +1,160 @@
 @model JobPostListViewModel
 @{
     ViewData["Title"] = Loc.T("home.title");
+    var categories = JobRecruitmentSystem.UI.Constants.JobPostOptions.Categories;
+    var jobTypes = JobRecruitmentSystem.UI.Constants.JobPostOptions.JobTypes;
+    var districts = JobRecruitmentSystem.UI.Constants.JobPostOptions.Districts;
+    var isAuthenticated = User.Identity is { IsAuthenticated: true };
 }
 
 <section class="hero-section p-4 p-md-5 mb-4">
     <div class="row align-items-center g-4">
-        <div class="col-lg-7">
+        <div class="col-lg-7 hero-text-block">
             <h1 class="hero-title mb-2">@Loc.T("home.title")</h1>
             <p class="hero-slogan">
                 @Loc.T("home.sloganPart1")<span class="slogan-highlight">@Loc.T("home.sloganHighlight")</span>@Loc.T("home.sloganPart2")
             </p>
             <p class="hero-subtitle">@Loc.T("home.subtitle")</p>
         </div>
-        <div class="col-lg-5 d-none d-lg-block hero-icon-wrap">
-            <i class="bi bi-briefcase hero-icon"></i>
+        <div class="col-lg-5 d-none d-lg-flex hero-icon-wrap justify-content-center align-items-center">
+            <i class="bi bi-briefcase-fill hero-icon hero-icon-main"></i>
+            <i class="bi bi-search hero-icon hero-icon-accent"></i>
+            <i class="bi bi-graph-up-arrow hero-icon hero-icon-accent2"></i>
         </div>
     </div>
 </section>
 
-<div class="filter-card p-3 p-md-4 mb-4">
-    <form method="get" asp-controller="Home" asp-action="Index" class="row g-2 js-loading-form">
-        <div class="col-md-3">
-            <div class="input-group">
-                <span class="input-group-text"><i class="bi bi-tag"></i></span>
-                <input type="text" class="form-control" name="category" placeholder="@Loc.T("common.category")" value="@Model.Category" />
-            </div>
+<div class="row g-4">
+    <aside class="col-lg-3 d-none d-lg-block">
+        <div class="sidebar-card">
+            <h6 class="sidebar-card-title"><i class="bi bi-grid-3x3-gap-fill"></i> @Loc.T("home.categoriesTitle")</h6>
+            <ul class="category-quicklist">
+                @foreach (var category in categories)
+                {
+                    <li>
+                        <a asp-controller="Home" asp-action="Index" asp-route-category="@category" class="@(category == Model.Category ? "active" : "")">
+                            <i class="bi bi-chevron-right"></i> @Loc.T(JobRecruitmentSystem.UI.Constants.JobPostOptions.CategoryKeys[category])
+                        </a>
+                    </li>
+                }
+            </ul>
         </div>
-        <div class="col-md-3">
-            <div class="input-group">
-                <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
-                <input type="text" class="form-control" name="location" placeholder="@Loc.T("common.location")" value="@Model.Location" />
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="input-group">
-                <span class="input-group-text"><i class="bi bi-briefcase"></i></span>
-                <input type="text" class="form-control" name="jobType" placeholder="@Loc.T("common.jobType")" value="@Model.JobType" />
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="input-group">
-                <span class="input-group-text"><i class="bi bi-cash-coin"></i></span>
-                <input type="number" class="form-control" name="minSalary" placeholder="@Loc.T("common.minSalary")" value="@Model.MinSalary" />
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="input-group">
-                <span class="input-group-text"><i class="bi bi-cash-coin"></i></span>
-                <input type="number" class="form-control" name="maxSalary" placeholder="@Loc.T("common.maxSalary")" value="@Model.MaxSalary" />
-            </div>
-        </div>
-        <div class="col-12">
-            <button type="submit" class="btn btn-primary"><i class="bi bi-search me-1"></i>@Loc.T("common.search")</button>
-            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">@Loc.T("common.cancel")</a>
-        </div>
-    </form>
-</div>
+    </aside>
 
-@if (!Model.Jobs.Any())
-{
-    <partial name="_EmptyState" model="@Loc.T("home.noResults")" />
-}
-else
-{
-    <div class="row g-3">
-        @foreach (var job in Model.Jobs)
-        {
-            <div class="col-md-6 col-lg-4">
-                <div class="card job-card">
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">@job.Title</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">@job.CompanyName</h6>
-                        <p class="mb-1 job-meta"><small><i class="bi bi-geo-alt-fill"></i> @job.Location &nbsp;•&nbsp; <i class="bi bi-clock-fill"></i> @job.JobType</small></p>
-                        <p class="mb-2"><strong>@Loc.T("home.salary"):</strong> @job.SalaryMin.ToString("N0") - @job.SalaryMax.ToString("N0")</p>
-                        <p class="text-muted small mb-3"><i class="bi bi-calendar-event"></i> @Loc.T("home.deadline"): @job.Deadline.ToString("dd.MM.yyyy")</p>
-                        <a asp-controller="JobPost" asp-action="Details" asp-route-id="@job.Id" class="btn btn-outline-primary mt-auto">@Loc.T("home.viewDetails")</a>
+    <div class="col-lg-6">
+        <div class="filter-card p-3 p-md-4 mb-4">
+            <form method="get" asp-controller="Home" asp-action="Index" class="row g-2 js-loading-form">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-tag"></i></span>
+                        <select class="form-select" name="category">
+                            <option value="">@Loc.T("common.all")</option>
+                            @foreach (var category in categories)
+                            {
+                                <option value="@category" selected="@(category == Model.Category ? "selected" : null)">@Loc.T(JobRecruitmentSystem.UI.Constants.JobPostOptions.CategoryKeys[category])</option>
+                            }
+                        </select>
                     </div>
                 </div>
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+                        <select class="form-select" name="location">
+                            <option value="">@Loc.T("common.all")</option>
+                            @foreach (var district in districts)
+                            {
+                                <option value="@district" selected="@(district == Model.Location ? "selected" : null)">@Loc.T(JobRecruitmentSystem.UI.Constants.JobPostOptions.DistrictKeys[district])</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-briefcase"></i></span>
+                        <select class="form-select" name="jobType">
+                            <option value="">@Loc.T("common.all")</option>
+                            @foreach (var jobType in jobTypes)
+                            {
+                                <option value="@jobType" selected="@(jobType == Model.JobType ? "selected" : null)">@Loc.T(JobRecruitmentSystem.UI.Constants.JobPostOptions.JobTypeKeys[jobType])</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-cash-coin"></i></span>
+                        <input type="number" class="form-control" name="minSalary" placeholder="@Loc.T("common.minSalary")" value="@Model.MinSalary" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-cash-coin"></i></span>
+                        <input type="number" class="form-control" name="maxSalary" placeholder="@Loc.T("common.maxSalary")" value="@Model.MaxSalary" />
+                    </div>
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-search me-1"></i>@Loc.T("common.search")</button>
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">@Loc.T("common.cancel")</a>
+                </div>
+            </form>
+        </div>
+
+        @if (!Model.Jobs.Any())
+        {
+            <partial name="_EmptyState" model="@Loc.T("home.noResults")" />
+        }
+        else
+        {
+            <div class="row g-3">
+                @foreach (var job in Model.Jobs)
+                {
+                    <div class="col-sm-6">
+                        <div class="card job-card">
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">@job.Title</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">@job.CompanyName</h6>
+                                <span class="badge bg-light text-dark border mb-2 align-self-start"><i class="bi bi-tag-fill text-primary"></i> @job.Category</span>
+                                <p class="mb-1 job-meta"><small><i class="bi bi-geo-alt-fill"></i> @job.Location &nbsp;•&nbsp; <i class="bi bi-clock-fill"></i> @job.JobType</small></p>
+                                <p class="mb-2"><strong>@Loc.T("home.salary"):</strong> @job.SalaryMin.ToString("N0") - @job.SalaryMax.ToString("N0")</p>
+                                <p class="text-muted small mb-3"><i class="bi bi-calendar-event"></i> @Loc.T("home.deadline"): @job.Deadline.ToString("dd.MM.yyyy")</p>
+                                <a asp-controller="JobPost" asp-action="Details" asp-route-id="@job.Id" class="btn btn-outline-primary mt-auto">@Loc.T("home.viewDetails")</a>
+                            </div>
+                        </div>
+                    </div>
+                }
             </div>
         }
     </div>
-}
+
+    <aside class="col-lg-3 d-none d-lg-block">
+        @if (!isAuthenticated)
+        {
+            <div class="sidebar-cta mb-4">
+                <i class="bi bi-building"></i>
+                <h6>@Loc.T("home.ctaEmployerTitle")</h6>
+                <p>@Loc.T("home.ctaEmployerText")</p>
+                <a asp-controller="Account" asp-action="Register" class="btn btn-light btn-sm">@Loc.T("nav.register")</a>
+            </div>
+        }
+        else if (User.IsInRole("Employer"))
+        {
+            <div class="sidebar-cta mb-4">
+                <i class="bi bi-plus-circle"></i>
+                <h6>@Loc.T("home.ctaNewPostTitle")</h6>
+                <p>@Loc.T("home.ctaNewPostText")</p>
+                <a asp-controller="Employer" asp-action="Create" class="btn btn-light btn-sm">@Loc.T("nav.newPost")</a>
+            </div>
+        }
+        else if (User.IsInRole("JobSeeker"))
+        {
+            <div class="sidebar-cta mb-4">
+                <i class="bi bi-bookmark-heart"></i>
+                <h6>@Loc.T("home.ctaSeekerTitle")</h6>
+                <p>@Loc.T("home.ctaSeekerText")</p>
+                <a asp-controller="JobSeeker" asp-action="Profile" class="btn btn-light btn-sm">@Loc.T("jobseeker.profileTitle")</a>
+            </div>
+        }
+
+        <partial name="_CareerQuote" />
+    </aside>
+</div>

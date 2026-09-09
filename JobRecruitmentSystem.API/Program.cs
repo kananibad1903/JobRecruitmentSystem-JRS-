@@ -1,4 +1,5 @@
 using System.Text;
+using JobRecruitmentSystem.API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -47,6 +48,7 @@ builder.Services.AddScoped<IJobSeekerRepository, JobSeekerRepository>();
 builder.Services.AddScoped<IJobPostRepository, JobPostRepository>();
 builder.Services.AddScoped<IApplicationRepository, ApplicationRepository>();
 builder.Services.AddScoped<ISavedJobRepository, SavedJobRepository>();
+builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IEmployerService, EmployerService>();
@@ -56,7 +58,9 @@ builder.Services.AddScoped<IApplicationService, ApplicationService>();
 builder.Services.AddScoped<ISavedJobService, SavedJobService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddHttpClient<IAiChatService, AiChatService>();
+builder.Services.AddHostedService<ExpiredJobPostCleanupService>();
 
 builder.Services.AddAuthentication(options =>
 {

@@ -20,5 +20,6 @@ namespace JobRecruitmentSystem.BLL.DTOs
         public DateTime Deadline { get; set; }
         public DateTime CreatedAt { get; set; }
         public bool IsApproved { get; set; }
+        public bool IsExpired { get; set; }
     }
 }

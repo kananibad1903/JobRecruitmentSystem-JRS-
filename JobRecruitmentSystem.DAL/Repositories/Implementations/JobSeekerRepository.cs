@@ -20,6 +20,15 @@ namespace JobRecruitmentSystem.DAL.Repositories.Implementations
                 .FirstOrDefaultAsync(_context.JobSeekers, js => js.Id == id);
         }
 
+        public async Task<JobSeeker> GetByIdWithUserAsync(int id)
+        {
+            var query = Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions
+                .Include(_context.JobSeekers, js => js.User);
+
+            return await Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions
+                .FirstOrDefaultAsync(query, js => js.Id == id);
+        }
+
         public async Task<JobSeeker> GetByUserIdAsync(int userId)
         {
             return await Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions

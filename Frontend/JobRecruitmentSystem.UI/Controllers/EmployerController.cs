@@ -169,6 +169,26 @@ namespace JobRecruitmentSystem.UI.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> CandidateProfile(int id)
+        {
+            try
+            {
+                var profile = await _api.GetAsync<CandidateProfileViewModel>($"Employer/candidates/{id}");
+                if (profile is null)
+                {
+                    return NotFound();
+                }
+
+                return View(profile);
+            }
+            catch (ApiException ex)
+            {
+                TempData["Error"] = ex.Message;
+                return RedirectToAction(nameof(MyPosts));
+            }
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Applications(int jobPostId)
         {
             var applications = await _api.GetAsync<List<ApplicationViewModel>>($"Application/job-post/{jobPostId}");

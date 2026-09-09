@@ -31,7 +31,7 @@ else
                 @foreach (var app in Model)
                 {
                     <tr>
-                        <td>@app.JobSeekerName</td>
+                        <td><a asp-controller="Employer" asp-action="CandidateProfile" asp-route-id="@app.JobSeekerId">@app.JobSeekerName</a></td>
                         <td>@app.AppliedAt.ToString("dd.MM.yyyy")</td>
                         <form asp-controller="Employer" asp-action="UpdateStatus" method="post" class="contents">
                             <input type="hidden" name="Id" value="@app.Id" />

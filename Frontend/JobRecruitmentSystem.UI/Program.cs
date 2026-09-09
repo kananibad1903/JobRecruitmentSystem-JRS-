@@ -1,10 +1,14 @@
+using JobRecruitmentSystem.UI.Filters;
 using JobRecruitmentSystem.UI.Services;
 using JobRecruitmentSystem.UI.Services.Localization;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add<RequireCompanyProfileFilter>();
+});
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddSingleton<ILocalizer, JsonLocalizer>();

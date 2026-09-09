@@ -1,0 +1,17 @@
+<div id="notification-bell" class="dropdown">
+    <button class="btn notification-bell-btn position-relative" type="button" id="notification-bell-btn" data-bs-toggle="dropdown" aria-expanded="false" aria-label="@Loc.T("notifications.title")">
+        <i class="bi bi-bell-fill"></i>
+        <span id="notification-badge" class="notification-badge d-none"></span>
+    </button>
+    <div class="dropdown-menu dropdown-menu-end notification-dropdown p-0" aria-labelledby="notification-bell-btn">
+        <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
+            <strong class="small">@Loc.T("notifications.title")</strong>
+            <button type="button" id="notification-mark-all" class="btn btn-link btn-sm p-0">@Loc.T("notifications.markAllRead")</button>
+        </div>
+        <div id="notification-list" class="notification-list" data-empty-text="@Loc.T("notifications.empty")">
+            <p class="text-muted text-center small py-3 mb-0">@Loc.T("notifications.empty")</p>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/notifications.js" asp-append-version="true"></script>

@@ -1,6 +1,7 @@
 @{
     var currentCulture = Loc.CurrentCulture;
     var cultureNames = new Dictionary<string, string> { { "az", "AZ" }, { "en", "EN" }, { "ru", "RU" }, { "tr", "TR" } };
+    var cultureFlags = new Dictionary<string, string> { { "az", "🇦🇿" }, { "en", "🇬🇧" }, { "ru", "🇷🇺" }, { "tr", "🇹🇷" } };
 }
 <!DOCTYPE html>
 <html lang="@currentCulture">
@@ -48,7 +49,7 @@
                     <ul class="navbar-nav align-items-lg-center">
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                                <i class="bi bi-globe2 me-1"></i>@cultureNames.GetValueOrDefault(currentCulture, currentCulture.ToUpperInvariant())
+                                @cultureFlags.GetValueOrDefault(currentCulture, "🌐") @cultureNames.GetValueOrDefault(currentCulture, currentCulture.ToUpperInvariant())
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 @foreach (var culture in JobRecruitmentSystem.UI.Services.Localization.JsonLocalizer.SupportedCultures)
@@ -58,7 +59,7 @@
                                             <input type="hidden" name="culture" value="@culture" />
                                             <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
                                             <button type="submit" class="dropdown-item p-0 border-0 bg-transparent @(culture == currentCulture ? "fw-bold" : "")">
-                                                @cultureNames.GetValueOrDefault(culture, culture.ToUpperInvariant())
+                                                @cultureFlags.GetValueOrDefault(culture, "🌐") @cultureNames.GetValueOrDefault(culture, culture.ToUpperInvariant())
                                             </button>
                                         </form>
                                     </li>
@@ -68,6 +69,9 @@
 
                         @if (User.Identity is { IsAuthenticated: true })
                         {
+                            <li class="nav-item d-flex align-items-center">
+                                <partial name="_NotificationBell" />
+                            </li>
                             <li class="nav-item"><span class="nav-link text-light-emphasis"><i class="bi bi-person-fill me-1"></i>@User.Identity.Name</span></li>
                             <li class="nav-item">
                                 <form asp-controller="Account" asp-action="Logout" method="post">
@@ -98,6 +102,13 @@
         {
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                 @errorKey
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @if (TempData["Info"] is string infoKey)
+        {
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                @Loc.T(infoKey)
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         }

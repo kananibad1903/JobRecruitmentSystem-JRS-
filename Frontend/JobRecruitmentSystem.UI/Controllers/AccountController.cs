@@ -1,5 +1,7 @@
 using System.Security.Claims;
 using JobRecruitmentSystem.UI.Models.Auth;
+using JobRecruitmentSystem.UI.Models.Employer;
+using JobRecruitmentSystem.UI.Models.JobSeeker;
 using JobRecruitmentSystem.UI.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -108,6 +110,30 @@ namespace JobRecruitmentSystem.UI.Controllers
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
 
+                if (result.Role == "Employer")
+                {
+                    var employerProfile = await TryGetAsync<EmployerProfileViewModel>("Employer/profile", result.Token);
+                    if (employerProfile is null || string.IsNullOrWhiteSpace(employerProfile.CompanyName))
+                    {
+                        TempData["Info"] = "employer.completeProfilePrompt";
+                        return RedirectToAction("Profile", "Employer");
+                    }
+                }
+                else if (result.Role == "JobSeeker")
+                {
+                    var seekerProfile = await TryGetAsync<JobSeekerProfileViewModel>("JobSeeker/profile", result.Token);
+                    var isEmpty = seekerProfile is null
+                        || (string.IsNullOrWhiteSpace(seekerProfile.Skills)
+                            && string.IsNullOrWhiteSpace(seekerProfile.WorkExperience)
+                            && string.IsNullOrWhiteSpace(seekerProfile.CvFilePath));
+
+                    if (isEmpty)
+                    {
+                        TempData["Info"] = "jobseeker.completeProfilePrompt";
+                        return RedirectToAction("Profile", "JobSeeker");
+                    }
+                }
+
                 if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
                 {
                     return Redirect(model.ReturnUrl);
@@ -194,6 +220,18 @@ namespace JobRecruitmentSystem.UI.Controllers
         public IActionResult AccessDenied()
         {
             return View();
+        }
+
+        private async Task<T?> TryGetAsync<T>(string url, string? overrideToken = null) where T : class
+        {
+            try
+            {
+                return await _api.GetAsync<T>(url, overrideToken);
+            }
+            catch (ApiException)
+            {
+                return null;
+            }
         }
     }
 }

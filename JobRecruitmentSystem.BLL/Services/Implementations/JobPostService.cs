@@ -1,4 +1,5 @@
-﻿using JobRecruitmentSystem.BLL.DTOs;
+﻿using JobRecruitmentSystem.BLL.Constants;
+using JobRecruitmentSystem.BLL.DTOs;
 using JobRecruitmentSystem.BLL.Services.Interfaces;
 using JobRecruitmentSystem.DAL.Entities;
 using JobRecruitmentSystem.DAL.Repositories.Interfaces;
@@ -48,7 +49,7 @@ namespace JobRecruitmentSystem.BLL.Services.Implementations
             return jobPosts.Select(MapToDto).ToList();
         }
 
-        public async Task<List<JobPostDto>> SearchAsync(string category, string location, string jobType, decimal? minSalary, decimal? maxSalary)
+        public async Task<List<JobPostDto>> SearchAsync(string? category, string? location, string? jobType, decimal? minSalary, decimal? maxSalary)
         {
             var jobPosts = await _jobPostRepository.SearchAsync(category, location, jobType, minSalary, maxSalary);
             return jobPosts.Select(MapToDto).ToList();
@@ -71,6 +72,16 @@ namespace JobRecruitmentSystem.BLL.Services.Implementations
             if (employer == null)
             {
                 throw new Exception("Employer profili tapılmadı.");
+            }
+
+            if (!JobPostOptions.Categories.Contains(dto.Category))
+            {
+                throw new Exception("Kateqoriya düzgün deyil.");
+            }
+
+            if (!JobPostOptions.JobTypes.Contains(dto.JobType))
+            {
+                throw new Exception("İş tipi düzgün deyil.");
             }
 
             var jobPost = new JobPost
@@ -111,6 +122,16 @@ namespace JobRecruitmentSystem.BLL.Services.Implementations
             if (jobPost.EmployerId != employer.Id)
             {
                 throw new Exception("Bu elanı redaktə etmək icazəniz yoxdur.");
+            }
+
+            if (!JobPostOptions.Categories.Contains(dto.Category))
+            {
+                throw new Exception("Kateqoriya düzgün deyil.");
+            }
+
+            if (!JobPostOptions.JobTypes.Contains(dto.JobType))
+            {
+                throw new Exception("İş tipi düzgün deyil.");
             }
 
             jobPost.Title = dto.Title;
@@ -167,7 +188,8 @@ namespace JobRecruitmentSystem.BLL.Services.Implementations
                 SalaryMax = jobPost.SalaryMax,
                 Deadline = jobPost.Deadline,
                 CreatedAt = jobPost.CreatedAt,
-                IsApproved = jobPost.IsApproved
+                IsApproved = jobPost.IsApproved,
+                IsExpired = jobPost.IsExpired
             };
         }
     }

@@ -14,17 +14,20 @@ namespace JobRecruitmentSystem.BLL.Services.Implementations
         private readonly IJobSeekerRepository _jobSeekerRepository;
         private readonly IEmployerRepository _employerRepository;
         private readonly IJobPostRepository _jobPostRepository;
+        private readonly INotificationService _notificationService;
 
         public ApplicationService(
             IApplicationRepository applicationRepository,
             IJobSeekerRepository jobSeekerRepository,
             IEmployerRepository employerRepository,
-            IJobPostRepository jobPostRepository)
+            IJobPostRepository jobPostRepository,
+            INotificationService notificationService)
         {
             _applicationRepository = applicationRepository;
             _jobSeekerRepository = jobSeekerRepository;
             _employerRepository = employerRepository;
             _jobPostRepository = jobPostRepository;
+            _notificationService = notificationService;
         }
 
         public async Task<JobApplicationDto> ApplyAsync(int userId, CreateApplicationDto dto)
@@ -56,6 +59,11 @@ namespace JobRecruitmentSystem.BLL.Services.Implementations
             };
 
             await _applicationRepository.AddAsync(application);
+
+            await _notificationService.CreateAsync(
+                jobPost.Employer.UserId,
+                $"Yeni müraciət gəldi: '{jobPost.Title}' elanına.",
+                "/Employer/Applications?jobPostId=" + jobPost.Id);
 
             return new JobApplicationDto
             {
@@ -142,6 +150,15 @@ namespace JobRecruitmentSystem.BLL.Services.Implementations
             application.EmployerNote = dto.EmployerNote;
 
             await _applicationRepository.UpdateAsync(application);
+
+            var applicant = await _jobSeekerRepository.GetByIdAsync(application.JobSeekerId);
+            if (applicant != null)
+            {
+                await _notificationService.CreateAsync(
+                    applicant.UserId,
+                    $"Müraciətinizin statusu yeniləndi: {dto.Status} — '{application.JobPost?.Title}'.",
+                    "/JobSeeker/MyApplications");
+            }
 
             return new JobApplicationDto
             {

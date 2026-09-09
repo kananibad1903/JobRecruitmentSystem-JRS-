@@ -15,6 +15,7 @@ namespace JobRecruitmentSystem.DAL.Data
         public DbSet<JobPost> JobPosts { get; set; }
         public DbSet<JobApplication> Applications { get; set; }
         public DbSet<SavedJob> SavedJobs { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -76,6 +77,12 @@ namespace JobRecruitmentSystem.DAL.Data
             modelBuilder.Entity<JobApplication>()
                 .HasIndex(a => new { a.JobSeekerId, a.JobPostId })
                 .IsUnique();
+
+            modelBuilder.Entity<Notification>()
+                .HasOne(n => n.User)
+                .WithMany()
+                .HasForeignKey(n => n.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

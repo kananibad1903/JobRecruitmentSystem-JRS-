@@ -17,9 +17,9 @@ namespace JobRecruitmentSystem.UI.Services
             _accessor = accessor;
         }
 
-        public async Task<T?> GetAsync<T>(string url)
+        public async Task<T?> GetAsync<T>(string url, string? overrideToken = null)
         {
-            AttachToken();
+            AttachToken(overrideToken);
             var response = await _http.GetAsync(url);
             return await ProcessAsync<T>(response);
         }
@@ -66,9 +66,12 @@ namespace JobRecruitmentSystem.UI.Services
             return await ProcessAsync<T>(response);
         }
 
-        private void AttachToken()
+        private void AttachToken(string? overrideToken = null)
         {
-            var token = _accessor.HttpContext?.User?.FindFirst("AccessToken")?.Value;
+            // overrideToken lets a caller (e.g. right after sign-in, before the
+            // current request's HttpContext.User reflects the new cookie) supply
+            // the JWT directly instead of relying on the authenticated principal.
+            var token = overrideToken ?? _accessor.HttpContext?.User?.FindFirst("AccessToken")?.Value;
             _http.DefaultRequestHeaders.Authorization = token is null
                 ? null
                 : new AuthenticationHeaderValue("Bearer", token);
