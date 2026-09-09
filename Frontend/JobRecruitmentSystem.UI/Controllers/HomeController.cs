@@ -25,20 +25,28 @@ namespace JobRecruitmentSystem.UI.Controllers
 
             List<JobPostViewModel>? jobs;
 
-            if (hasFilter)
+            try
             {
-                var query = new StringBuilder("JobPost/search?");
-                query.Append($"category={Uri.EscapeDataString(category ?? string.Empty)}&");
-                query.Append($"location={Uri.EscapeDataString(location ?? string.Empty)}&");
-                query.Append($"jobType={Uri.EscapeDataString(jobType ?? string.Empty)}");
-                if (minSalary.HasValue) query.Append($"&minSalary={minSalary.Value}");
-                if (maxSalary.HasValue) query.Append($"&maxSalary={maxSalary.Value}");
+                if (hasFilter)
+                {
+                    var query = new StringBuilder("JobPost/search?");
+                    query.Append($"category={Uri.EscapeDataString(category ?? string.Empty)}&");
+                    query.Append($"location={Uri.EscapeDataString(location ?? string.Empty)}&");
+                    query.Append($"jobType={Uri.EscapeDataString(jobType ?? string.Empty)}");
+                    if (minSalary.HasValue) query.Append($"&minSalary={minSalary.Value}");
+                    if (maxSalary.HasValue) query.Append($"&maxSalary={maxSalary.Value}");
 
-                jobs = await _api.GetAsync<List<JobPostViewModel>>(query.ToString());
+                    jobs = await _api.GetAsync<List<JobPostViewModel>>(query.ToString());
+                }
+                else
+                {
+                    jobs = await _api.GetAsync<List<JobPostViewModel>>("JobPost");
+                }
             }
-            else
+            catch (ApiException ex)
             {
-                jobs = await _api.GetAsync<List<JobPostViewModel>>("JobPost");
+                TempData["Error"] = ex.Message;
+                jobs = new List<JobPostViewModel>();
             }
 
             var model = new JobPostListViewModel

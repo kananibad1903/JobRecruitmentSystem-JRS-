@@ -80,6 +80,31 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
     };
+
+    // TEMPORARY — SmarterASP.NET's trial hosting puts every request behind its
+    // own IIS-level HTTP Basic Authentication gate, which occupies the standard
+    // Authorization header. While that's active, the UI (see ApiClient.cs and
+    // Program.cs on the UI side) sends the trial's Basic credentials in
+    // Authorization and forwards our own JWT via a custom "X-Access-Token"
+    // header instead. This handler just teaches the JWT middleware to also
+    // check that header. Direct API callers (Swagger, Postman, mobile, etc.)
+    // are unaffected — they keep using the normal "Authorization: Bearer ..."
+    // header, which is still checked first/normally when present.
+    // REMOVE this OnMessageReceived block (and the matching UI-side workaround)
+    // once the trial period ends / a real domain is attached.
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            var customToken = context.Request.Headers["X-Access-Token"].FirstOrDefault();
+            if (!string.IsNullOrEmpty(customToken))
+            {
+                context.Token = customToken;
+            }
+
+            return Task.CompletedTask;
+        }
+    };
 });
 
 builder.Services.AddAuthorization();
@@ -88,7 +113,16 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+        var allowedOrigin = builder.Configuration["Cors:AllowedOrigin"];
+
+        if (builder.Environment.IsDevelopment() || string.IsNullOrWhiteSpace(allowedOrigin))
+        {
+            policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+        }
+        else
+        {
+            policy.WithOrigins(allowedOrigin).AllowAnyMethod().AllowAnyHeader();
+        }
     });
 });
 
